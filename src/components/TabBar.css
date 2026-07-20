@@ -1,25 +1,27 @@
 /* ============================================================
-   TabBar — ~271×76, floating
+   TabBar
+   Basato sull'export Figma (React Native) → React DOM + token.
+   Barra full-width bianca; tab attivo con pill --bg-accent-subtle.
    ============================================================ */
 
 .tab-bar {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  width: 271px;
-  height: 76px;
-  padding: 0 12px;
+  justify-content: center; /* gruppo di tab sempre centrato nella barra full-width */
+  gap: 16px;
+  width: 100%;
+  padding: 8px 10px 8px 8px; /* Figma: L8 · T8 · R10 · B8 */
   background: var(--bg-primary);
-  border-radius: 24px;
-  box-shadow: 0 8px 24px var(--shadow-default);
+  box-shadow: 0 2px 4px var(--shadow-default); /* Figma 0 2 4 rgba(35,35,35,.08) */
+  overflow: hidden;
 }
 
 .tab-bar[data-fixed] {
   position: absolute;
-  left: 50%;
-  bottom: 46px; /* sopra l'home indicator */
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 10;
 }
 
@@ -29,25 +31,32 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  flex: 1;
-  height: 56px;
+  padding: 8px 16px; /* Figma tabSpaceBlock */
   border: none;
-  border-radius: 16px;
+  border-radius: 999px;
   background: none;
-  color: var(--icon-secondary);
-  transition: background 0.15s ease, color 0.15s ease;
+  color: var(--icon-primary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.tab-bar__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
 }
 
 .tab-bar__label {
-  font: var(--tiny);
-  color: var(--text-tertiary);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  color: var(--text-accent); /* Figma #005b20 → --text-accent (#154200) */
 }
 
 .tab-bar__tab[data-active] {
-  background: var(--bg-accent-strong);
-  color: var(--icon-primary);
-}
-
-.tab-bar__tab[data-active] .tab-bar__label {
-  color: var(--text-accent);
+  background: var(--bg-accent-subtle); /* Figma #e5ffd3 → --green-100 */
 }

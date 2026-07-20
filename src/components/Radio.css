@@ -19,31 +19,25 @@
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: 22px;
-  height: 22px;
-  padding: 0;
+  width: 24px;
+  height: 24px;
+  padding: 4px; /* gap attorno al check 16px */
   border: 1.5px solid var(--border-subtle);
   border-radius: 50%;
   background: var(--bg-primary);
-  transition: border-color 0.15s ease;
+  color: var(--icon-inverse); /* Check bianca */
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
+/* Selezionato: pieno, senza bordo così il contenuto è esattamente 16px
+   (24 − padding 8) e il check 16px resta con 4px di padding per lato. */
 .radio__circle[data-checked] {
-  border-color: var(--bg-cta);
-  border-width: 2px;
-}
-
-.radio__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  border: none;
   background: var(--bg-cta);
-  transform: scale(0);
-  transition: transform 0.15s ease;
 }
 
-.radio__circle[data-checked] .radio__dot {
-  transform: scale(1);
+.radio__check {
+  display: block;
 }
 
 .radio__label {

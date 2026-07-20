@@ -41,7 +41,7 @@ function Section({ title, code, children }) {
 
 export default function ComponentsView() {
   const [name, setName] = useState('Weekend a Lisbona')
-  const [tab, setTab] = useState('trips')
+  const [tab, setTab] = useState('travels')
   const [seg, setSeg] = useState('itinerary')
   const [vibe, setVibe] = useState('lively')
   const [toggleA, setToggleA] = useState(true)
@@ -154,7 +154,7 @@ export default function ComponentsView() {
       </Section>
 
       {/* ============ SEGMENTED CONTROL ============ */}
-      <Section title="SegmentedControl" code="~308×38 · attivo accent-strong">
+      <Section title="SegmentedControl" code="da Figma · pill + gap, attivo lime">
         <SegmentedControl
           segments={[
             { value: 'itinerary', label: 'Itinerary' },
@@ -182,7 +182,7 @@ export default function ComponentsView() {
       </Section>
 
       {/* ============ TAB BAR ============ */}
-      <Section title="TabBar" code="~271×76 · Trips / Activity / Profile">
+      <Section title="TabBar" code="da Figma · full-width · Travels / Activity / Profile">
         <div className="cv-center">
           <TabBar active={tab} onChange={setTab} />
         </div>

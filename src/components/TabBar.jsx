@@ -1,27 +1,29 @@
-import { Map, Activity, User } from 'lucide-react'
+import { Map, Activity } from 'lucide-react'
+import Avatar from './Avatar'
 import './TabBar.css'
 
 const DEFAULT_TABS = [
-  { key: 'trips', label: 'Trips', icon: Map },
+  { key: 'travels', label: 'Travels', icon: Map },
   { key: 'activity', label: 'Activity', icon: Activity },
-  { key: 'profile', label: 'Profile', icon: User },
+  { key: 'profile', label: 'Profile', avatar: { name: 'Fra' } },
 ]
 
 /**
- * TabBar — ~271×76, 3 tab (Trips / Activity / Profile).
- * Tab attivo con highlight accent (lime). Pensata per stare fissa in basso
- * nel frame mobile (prop `fixed`).
+ * TabBar — barra full-width (da export Figma).
+ * Tab con icona (o avatar) + label. Tab attivo evidenziato con una pill
+ * --bg-accent-subtle. Pensata per stare fissa in basso nel frame (prop `fixed`).
  *
  * Props:
  *  - active:   key del tab attivo
  *  - onChange: (key) => void
- *  - tabs:     override della lista (default Trips/Activity/Profile)
- *  - fixed:    posiziona la tab bar fissa in basso, centrata nel frame
+ *  - tabs:     override della lista. Ogni tab: { key, label, icon? , avatar? }
+ *              (se `avatar` è presente, mostra un Avatar al posto dell'icona)
+ *  - fixed:    posiziona la tab bar fissa in basso nel frame
  */
-export default function TabBar({ active = 'trips', onChange, tabs = DEFAULT_TABS, fixed = false }) {
+export default function TabBar({ active = 'travels', onChange, tabs = DEFAULT_TABS, fixed = false }) {
   return (
     <nav className="tab-bar" data-fixed={fixed || undefined}>
-      {tabs.map(({ key, label, icon: Icon }) => {
+      {tabs.map(({ key, label, icon: Icon, avatar }) => {
         const isActive = key === active
         return (
           <button
@@ -31,7 +33,9 @@ export default function TabBar({ active = 'trips', onChange, tabs = DEFAULT_TABS
             onClick={() => onChange?.(key)}
             aria-current={isActive ? 'page' : undefined}
           >
-            <Icon size={22} strokeWidth={2.25} />
+            <span className="tab-bar__icon">
+              {avatar ? <Avatar size="xs" {...avatar} /> : <Icon size={24} strokeWidth={2.25} />}
+            </span>
             <span className="tab-bar__label">{label}</span>
           </button>
         )
