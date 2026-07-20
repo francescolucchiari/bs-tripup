@@ -1,0 +1,32 @@
+/* ============================================================
+   Badge — pill ~96×24 (larghezza adattiva al contenuto)
+   ============================================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font: var(--tiny);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge[data-variant='accent'] {
+  background: var(--bg-accent-strong);
+  color: var(--text-accent);
+}
+
+.badge[data-variant='neutral'] {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.badge[data-variant='warning'] {
+  background: var(--bg-warning-subtle);
+  color: var(--text-warning);
+}

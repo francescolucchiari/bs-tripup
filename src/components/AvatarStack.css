@@ -1,0 +1,31 @@
+/* ============================================================
+   AvatarStack
+   ============================================================ */
+
+.avatar-stack {
+  display: inline-flex;
+  align-items: center;
+}
+
+.avatar-stack__item:not(:first-child) {
+  margin-left: -8px;
+}
+
+.avatar-stack[data-size='md'] .avatar-stack__item:not(:first-child),
+.avatar-stack[data-size='lg'] .avatar-stack__item:not(:first-child) {
+  margin-left: -12px;
+}
+
+.avatar-stack__more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-accent-strong);
+  color: var(--text-accent);
+  font-family: var(--font-body);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  box-shadow: 0 0 0 2px var(--bg-primary);
+}

@@ -1,0 +1,111 @@
+/* ============================================================
+   MobileFrame — iPhone di riferimento 393×852, dimensioni native
+   ============================================================ */
+
+.mobile-frame {
+  --frame-w: 393px;
+  --frame-h: 852px;
+  --statusbar-h: 54px;
+  --home-indicator-h: 34px;
+
+  position: relative;
+  width: var(--frame-w);
+  height: var(--frame-h);
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-page);
+  border-radius: 44px;
+  /* Bordo device + ombra per staccarlo dalla "scrivania" */
+  box-shadow:
+    0 0 0 12px var(--black),
+    0 0 0 13px #2a2a2a,
+    0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* ---- Status bar ---- */
+.mobile-frame__statusbar {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 var(--statusbar-h);
+  height: var(--statusbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  padding-top: 12px;
+  color: var(--black);
+}
+
+.mobile-frame[data-statusbar='light'] .mobile-frame__statusbar {
+  color: var(--white);
+}
+
+.mobile-frame__time {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  min-width: 54px;
+}
+
+.mobile-frame__icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 54px;
+  justify-content: flex-end;
+}
+
+/* Notch / Dynamic Island finto */
+.mobile-frame__notch {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 122px;
+  height: 34px;
+  background: var(--black);
+  border-radius: 20px;
+}
+
+/* ---- Contenuto scrollabile ---- */
+.mobile-frame__content {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* Scrollbar discreta */
+.mobile-frame__content::-webkit-scrollbar {
+  width: 0;
+}
+
+/* ---- Home indicator ---- */
+.mobile-frame__home-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  height: var(--home-indicator-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.mobile-frame__home-indicator span {
+  width: 140px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--black);
+  opacity: 0.85;
+}
+
+.mobile-frame[data-statusbar='light'] .mobile-frame__home-indicator span {
+  background: var(--white);
+}

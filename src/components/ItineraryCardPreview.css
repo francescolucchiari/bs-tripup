@@ -1,0 +1,72 @@
+/* ============================================================
+   ItineraryCardPreview — ~313×80
+   ============================================================ */
+
+.itinerary-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 313px;
+  max-width: 100%;
+  height: 80px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  text-align: left;
+  cursor: default;
+}
+
+button.itinerary-card {
+  cursor: pointer;
+}
+
+.itinerary-card__thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--surface-placeholder);
+  overflow: hidden;
+}
+
+.itinerary-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.itinerary-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.itinerary-card__title {
+  font: var(--body-l);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itinerary-card__subtitle {
+  font: var(--caption);
+  color: var(--text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itinerary-card__amount {
+  flex: 0 0 auto;
+  font: var(--heading-s);
+  font-weight: 700;
+  color: var(--text-on-amount);
+  letter-spacing: var(--tracking-tight);
+}

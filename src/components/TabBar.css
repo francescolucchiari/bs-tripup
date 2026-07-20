@@ -1,0 +1,53 @@
+/* ============================================================
+   TabBar — ~271×76, floating
+   ============================================================ */
+
+.tab-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 271px;
+  height: 76px;
+  padding: 0 12px;
+  background: var(--bg-primary);
+  border-radius: 24px;
+  box-shadow: 0 8px 24px var(--shadow-default);
+}
+
+.tab-bar[data-fixed] {
+  position: absolute;
+  left: 50%;
+  bottom: 46px; /* sopra l'home indicator */
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.tab-bar__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  height: 56px;
+  border: none;
+  border-radius: 16px;
+  background: none;
+  color: var(--icon-secondary);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tab-bar__label {
+  font: var(--tiny);
+  color: var(--text-tertiary);
+}
+
+.tab-bar__tab[data-active] {
+  background: var(--bg-accent-strong);
+  color: var(--icon-primary);
+}
+
+.tab-bar__tab[data-active] .tab-bar__label {
+  color: var(--text-accent);
+}

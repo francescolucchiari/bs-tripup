@@ -1,0 +1,27 @@
+/* ============================================================
+   Chip / tag "vibe"
+   ============================================================ */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--bg-accent-subtle);
+  color: var(--text-accent);
+  font: var(--body-m-bold);
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+button.chip {
+  cursor: pointer;
+}
+
+.chip[data-selected] {
+  background: var(--bg-accent-strong);
+  border-color: var(--border-accent);
+}

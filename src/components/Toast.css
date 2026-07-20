@@ -1,0 +1,33 @@
+/* ============================================================
+   Toast — ~345×56
+   ============================================================ */
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 345px;
+  max-width: 100%;
+  height: 56px;
+  padding: 0 18px;
+  border-radius: 14px;
+  background: var(--bg-cta);
+  color: var(--text-inverse);
+  box-shadow: 0 8px 24px var(--shadow-default);
+}
+
+.toast__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-accent-strong);
+  color: var(--green-900);
+}
+
+.toast__text {
+  font: var(--body-l);
+}

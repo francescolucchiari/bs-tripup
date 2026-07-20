@@ -1,0 +1,31 @@
+/* ============================================================
+   SegmentedControl — ~308×38
+   ============================================================ */
+
+.segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  width: 308px;
+  max-width: 100%;
+  height: 38px;
+  padding: 3px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+}
+
+.segmented__seg {
+  flex: 1;
+  height: 100%;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  font: var(--body-m-bold);
+  color: var(--text-secondary);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.segmented__seg[data-active] {
+  background: var(--bg-accent-strong);
+  color: var(--text-accent);
+}

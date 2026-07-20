@@ -1,0 +1,42 @@
+/* ============================================================
+   ScreenHeader — back + titolo centrato + azione opzionale
+   ============================================================ */
+
+.screen-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 56px;
+}
+
+.screen-header__slot {
+  display: inline-flex;
+  align-items: center;
+}
+
+.screen-header__slot--end {
+  justify-content: flex-end;
+}
+
+.screen-header__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--icon-primary);
+}
+
+.screen-header__title {
+  font: var(--heading-m);
+  color: var(--text-primary);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

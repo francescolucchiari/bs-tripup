@@ -1,0 +1,51 @@
+/* ============================================================
+   InputText — ~345×64
+   ============================================================ */
+
+.input-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  width: 345px;
+  max-width: 100%;
+  height: 64px;
+  padding: 10px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  cursor: text;
+  transition: border-color 0.15s ease;
+}
+
+.input-text:focus-within {
+  border-color: var(--border-accent);
+}
+
+.input-text[data-disabled] {
+  background: var(--bg-secondary);
+  cursor: not-allowed;
+}
+
+.input-text__label {
+  font: var(--caption);
+  color: var(--text-tertiary);
+}
+
+.input-text__field {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: var(--body-l);
+  color: var(--text-primary);
+}
+
+.input-text__field::placeholder {
+  color: var(--text-disabled);
+  font-weight: 400;
+}
+
+.input-text[data-disabled] .input-text__field {
+  color: var(--text-disabled);
+}

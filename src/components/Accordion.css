@@ -1,0 +1,72 @@
+/* ============================================================
+   Accordion — chiuso ~58, aperto ~182
+   ============================================================ */
+
+.accordion {
+  width: 345px;
+  max-width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.accordion__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 56px;
+  padding: 0 18px;
+  background: none;
+  border: none;
+}
+
+.accordion__label {
+  font: var(--body-l);
+  color: var(--text-primary);
+}
+
+.accordion__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.accordion__value {
+  font: var(--body-m);
+  color: var(--text-secondary);
+}
+
+.accordion__chevron {
+  color: var(--icon-secondary);
+  transition: transform 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.accordion[data-open] .accordion__chevron {
+  transform: rotate(180deg);
+}
+
+.accordion__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.accordion[data-open] .accordion__panel {
+  grid-template-rows: 1fr;
+}
+
+.accordion__content {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Il padding vive nel wrapper interno per non rompere la transizione grid-rows */
+.accordion__inner {
+  padding: 14px 18px 18px;
+  border-top: 1px solid var(--border-default);
+  font: var(--body-m);
+  color: var(--text-secondary);
+}

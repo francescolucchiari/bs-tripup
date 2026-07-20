@@ -1,0 +1,26 @@
+/* ============================================================
+   ProgressBar — 0-100%
+   ============================================================ */
+
+.progress {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.progress[data-tone='accent'] .progress__fill {
+  background: var(--bg-accent-strong);
+}
+
+.progress[data-tone='strong'] .progress__fill {
+  background: var(--bg-cta);
+}

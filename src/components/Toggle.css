@@ -1,0 +1,41 @@
+/* ============================================================
+   Toggle — switch on/off
+   ============================================================ */
+
+.toggle {
+  position: relative;
+  width: 46px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--gray-400);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.toggle__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 1px 3px var(--black-8);
+  transition: transform 0.2s ease;
+}
+
+.toggle[data-checked] {
+  background: var(--bg-accent-strong);
+}
+
+.toggle[data-checked] .toggle__knob {
+  transform: translateX(18px);
+}
+
+.toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

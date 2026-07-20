@@ -1,0 +1,210 @@
+/* ============================================================
+   Playground — pagina temporanea di verifica token/font
+   ============================================================ */
+
+.pg-shell {
+  min-height: 100%;
+  background: var(--bg-page);
+}
+
+/* La TokensView riusa .pg come wrapper interno */
+.pg {
+  padding: 4px 20px 0;
+}
+
+/* ---- Header ---- */
+.pg-header {
+  padding: 20px 20px 4px;
+}
+
+.pg-switch {
+  margin-top: 16px;
+}
+
+/* ---- Footer ---- */
+.pg-footer {
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid var(--border-default);
+}
+
+.pg-footer span {
+  font: var(--caption);
+  color: var(--text-tertiary);
+}
+
+.pg-badge {
+  display: inline-block;
+  font: var(--tiny);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+  color: var(--text-accent);
+  background: var(--bg-accent-strong);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.pg-title {
+  font: var(--heading-xl);
+  color: var(--text-primary);
+  margin-top: 12px;
+}
+
+.pg-subtitle {
+  font: var(--body-m);
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+
+/* ---- Sezioni ---- */
+.pg-section {
+  padding: 18px 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.pg-section--first {
+  border-top: none;
+  padding-top: 8px;
+}
+
+.pg-section__title {
+  font: var(--heading-m);
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+/* ---- Font check ---- */
+.pg-fontcheck {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pg-fontcheck__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: var(--text-primary);
+}
+
+.pg-fontcheck__label {
+  font: var(--caption);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---- Scala tipografica ---- */
+.pg-type {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pg-type__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pg-type__label {
+  font: var(--caption);
+  color: var(--text-tertiary);
+}
+
+.pg-type__sample {
+  color: var(--text-primary);
+}
+
+/* ---- Importi & badge ---- */
+.pg-amounts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pg-amount {
+  font: var(--heading-l);
+  color: var(--text-on-amount);
+  letter-spacing: var(--tracking-tight);
+}
+
+.pg-chip {
+  font: var(--tiny);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+  color: var(--text-accent);
+  background: var(--bg-accent-strong);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.pg-chip--warm {
+  color: var(--text-warning);
+  background: var(--bg-warning-subtle);
+}
+
+/* ---- Swatches colore ---- */
+.pg-group {
+  margin-bottom: 18px;
+}
+
+.pg-group__title {
+  font: var(--body-m-bold);
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.pg-swatches {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.pg-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pg-swatch__chip {
+  position: relative;
+  height: 56px;
+  border-radius: 12px;
+  border: 1px solid var(--border-default);
+  overflow: hidden;
+}
+
+.pg-swatch__fill {
+  position: absolute;
+  inset: 0;
+}
+
+/* Scacchiera dietro i colori con alpha per renderli leggibili */
+.pg-swatch__chip--checker {
+  background-image:
+    linear-gradient(45deg, var(--gray-300) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--gray-300) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--gray-300) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--gray-300) 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+}
+
+.pg-swatch__name {
+  font: var(--caption);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pg-swatch__hex {
+  font: var(--tiny);
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-tight);
+}
