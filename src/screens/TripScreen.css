@@ -1,0 +1,351 @@
+/* ============================================================
+   TripScreen (2 · Trip view / Itinerary)
+   Top layer fisso (header + segmented + fascia blur); la lista
+   attività scorre sotto e sbuca dietro la fascia sfumata.
+   Timeline a griglia: rail (marker giorno) e card sulla stessa riga.
+   ============================================================ */
+
+.trip {
+  position: absolute;
+  inset: 0;
+  /* altezza del layer fisso in alto: quanto la lista è "spinta" giù.
+     Tarato così la Not planned dista ~140px dalla tab bar; il gruppo del
+     martedì sfuma sotto la fascia blur, mercoledì resta in evidenza. */
+  --top-h: 190px;
+}
+
+/* ---- TOP LAYER FISSO ---- */
+.trip__top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+}
+
+.trip__header {
+  position: relative;
+  min-height: 176px;
+  padding: 8px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: var(--bg-accent); /* green-200 */
+  overflow: hidden;
+}
+
+.trip__blob {
+  position: absolute;
+  top: 4px;
+  right: -28px;
+  z-index: 0;
+  width: 208px;
+  height: auto;
+  transform: rotate(-6deg);
+  pointer-events: none;
+}
+
+.trip__back {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: var(--white-40);
+  color: var(--icon-primary);
+}
+
+.trip__cover {
+  position: absolute;
+  top: 40px;
+  right: 20px;
+  width: 101px;
+  height: 119px;
+  border-radius: 16px;
+  border: 4px solid var(--white);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  transform: rotate(4deg);
+  background: var(--bg-secondary);
+}
+
+.trip__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trip__cover-ph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--green-300), var(--green-400));
+}
+
+.trip__cover-edit {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border: none;
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--icon-primary);
+}
+
+.trip__intro {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 230px;
+}
+
+.trip__title {
+  font: var(--heading-xl);
+  color: var(--green-800);
+}
+
+.trip__meta {
+  font: var(--body-m);
+  color: var(--green-800);
+}
+
+.trip__participants {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 4px 8px 4px 4px;
+  border-radius: 999px;
+  background: var(--white);
+}
+
+.trip__add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--icon-primary);
+}
+
+/* ---- ZONA SEGMENTED + FASCIA BLUR ---- */
+.trip__belowfold {
+  position: relative;
+}
+
+/* segmented trasparente: galleggia sopra la fascia blur, così il
+   contenuto sfuma con continuità anche dietro di esso (niente scalino) */
+.trip__segmented {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 8px;
+  background: transparent;
+}
+
+/* ---- FASCIA PROGRESSIVE-BLUR ----
+   Parte dal bordo inferiore dell'header (top:0 di belowfold) e copre
+   ~74px passando DIETRO al segmented. Più layer a blur crescente,
+   ciascuno rivelato da una mask a gradiente: near-content (basso) blur
+   ~0, near-header (alto) blur massimo → transizione continua. */
+.trip__fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 74px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.trip__fade-layer,
+.trip__fade-veil {
+  position: absolute;
+  inset: 0;
+}
+
+/* Rivelazione cumulativa verso l'alto: ogni layer parte più in alto e
+   sfoca di più. La soglia di mask sale con il blur. */
+.trip__fade-layer:nth-child(1) {
+  -webkit-backdrop-filter: blur(0.6px);
+  backdrop-filter: blur(0.6px);
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 18%);
+  mask-image: linear-gradient(to top, transparent 0%, #000 18%);
+}
+.trip__fade-layer:nth-child(2) {
+  -webkit-backdrop-filter: blur(1.2px);
+  backdrop-filter: blur(1.2px);
+  -webkit-mask-image: linear-gradient(to top, transparent 15%, #000 33%);
+  mask-image: linear-gradient(to top, transparent 15%, #000 33%);
+}
+.trip__fade-layer:nth-child(3) {
+  -webkit-backdrop-filter: blur(2.4px);
+  backdrop-filter: blur(2.4px);
+  -webkit-mask-image: linear-gradient(to top, transparent 30%, #000 48%);
+  mask-image: linear-gradient(to top, transparent 30%, #000 48%);
+}
+.trip__fade-layer:nth-child(4) {
+  -webkit-backdrop-filter: blur(4.5px);
+  backdrop-filter: blur(4.5px);
+  -webkit-mask-image: linear-gradient(to top, transparent 45%, #000 63%);
+  mask-image: linear-gradient(to top, transparent 45%, #000 63%);
+}
+.trip__fade-layer:nth-child(5) {
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+  -webkit-mask-image: linear-gradient(to top, transparent 60%, #000 80%);
+  mask-image: linear-gradient(to top, transparent 60%, #000 80%);
+}
+.trip__fade-layer:nth-child(6) {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  -webkit-mask-image: linear-gradient(to top, transparent 76%, #000 96%);
+  mask-image: linear-gradient(to top, transparent 76%, #000 96%);
+}
+
+/* velo di colore leggero solo verso l'alto: raccorda col segmented senza
+   nascondere il contenuto (niente bordo netto) */
+.trip__fade-veil {
+  background: linear-gradient(
+    to top,
+    rgba(249, 249, 249, 0) 55%,
+    rgba(249, 249, 249, 0.5) 100%
+  );
+}
+
+/* ---- CONTENUTO SCROLLABILE ---- */
+.trip__scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: var(--top-h);
+  /* Tarato così lo scroll massimo coincide con la vista "Tue sbucca sotto il
+     blur, Wed in evidenza" (identica a prima); Mon 8 si raggiunge scrollando
+     su. blocco Tue/Wed = 376px → padding-bottom = 798-190-376 = 232. */
+  padding-bottom: 232px;
+}
+
+.trip__expenses-note {
+  padding: 48px 24px;
+  text-align: center;
+  font: var(--body-m);
+  color: var(--text-secondary);
+}
+
+/* ---- TIMELINE (rail + card per riga) ---- */
+.trip__timeline {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  column-gap: 12px;
+  row-gap: 16px;
+  align-items: center;
+  padding: 0 24px 0 16px; /* rail a 16px dal margine sx · card a 24px dal dx */
+}
+
+/* la card riempie la cella della griglia (non la sua width fissa 313),
+   così il lato destro resta a 24px dal margine */
+.trip__timeline .itinerary-card {
+  width: auto;
+  min-width: 0;
+}
+
+.rail {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* spine tratteggiata del timeline (dietro i marker) */
+.rail::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 1px solid var(--border-subtle);
+  z-index: 0;
+}
+
+.rail[data-spine='down']::before {
+  top: 50%;
+  bottom: -8px;
+}
+
+.rail[data-spine='up']::before {
+  top: -8px;
+  bottom: 50%;
+}
+
+.rail[data-spine='through']::before {
+  top: -8px;
+  bottom: -8px;
+}
+
+/* marker giorno (maschera la spine dietro di sé) */
+.daymark {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  background: var(--bg-page);
+}
+
+.daymark__dow {
+  font: var(--tiny);
+  color: var(--text-disabled);
+}
+
+.daymark__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--gray-300);
+  color: var(--text-disabled);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.daymark--active .daymark__dow {
+  color: var(--green-900);
+}
+
+.daymark--active .daymark__num {
+  background: var(--green-900);
+  color: var(--green-400);
+}
+
+.daymark__dot {
+  position: relative;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--green-400);
+}

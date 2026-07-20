@@ -1,0 +1,36 @@
+/* ============================================================
+   DevToggle — strumento di sviluppo, NON parte del prototipo.
+   Fisso in alto a destra della pagina, fuori dal frame mobile.
+   Alterna tra la vista "Prototype" e la vista "Design System".
+   ============================================================ */
+
+.dev-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--gray-100, #fff);
+  border: 1px solid var(--gray-400, #d1d5db);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.dev-toggle__btn {
+  border: 0;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.dev-toggle__btn[data-active='true'] {
+  background: var(--bg-cta, #2f5e1e);
+  color: #fff;
+}

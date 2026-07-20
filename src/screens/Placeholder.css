@@ -1,0 +1,51 @@
+/* ============================================================
+   Placeholder — layout minimale e neutro per lo scheletro
+   navigabile (step 3). Nessuna estetica curata: serve solo a
+   percorrere il flusso end-to-end. Verrà sostituito dal
+   contenuto vero schermata per schermata.
+   ============================================================ */
+
+.ph {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ph__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.ph__eyebrow {
+  font: var(--label-s, 600 12px/1.2 var(--font-body));
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #6b7280);
+}
+
+.ph__title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+}
+
+.ph__note {
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 16px;
+}
+
+.ph__cta {
+  width: 100%;
+  max-width: 345px;
+  margin-top: 8px;
+}
+
+/* spazio per la tab bar fissa quando presente */
+.ph[data-tabbar='true'] .ph__body {
+  padding-bottom: 96px;
+}

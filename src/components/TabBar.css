@@ -1,27 +1,29 @@
 /* ============================================================
-   TabBar
-   Basato sull'export Figma (React Native) → React DOM + token.
-   Barra full-width bianca; tab attivo con pill --bg-accent-subtle.
+   TabBar — dock a pill flottante (spec Figma).
+   Pill bianca arrotondata (hug contents), centrata; tab attivo
+   con pill --bg-accent-subtle. Con prop `fixed` galleggia in basso.
    ============================================================ */
 
 .tab-bar {
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center; /* gruppo di tab sempre centrato nella barra full-width */
+  justify-content: center;
   gap: 16px;
-  width: 100%;
   padding: 8px 10px 8px 8px; /* Figma: L8 · T8 · R10 · B8 */
   background: var(--bg-primary);
-  box-shadow: 0 2px 4px var(--shadow-default); /* Figma 0 2 4 rgba(35,35,35,.08) */
-  overflow: hidden;
+  border-radius: 999px;
+  box-shadow:
+    0 0 4px -2px var(--shadow-default),
+    0 0 8px -1px var(--shadow-default),
+    inset 0 1px 1px var(--shadow-accent);
 }
 
 .tab-bar[data-fixed] {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  bottom: 20px; /* galleggia sopra l'home indicator */
+  transform: translateX(-50%);
   z-index: 10;
 }
 
@@ -54,7 +56,7 @@
   font-size: 12px;
   line-height: 1;
   letter-spacing: 0.2px;
-  color: var(--text-accent); /* Figma #005b20 → --text-accent (#154200) */
+  color: var(--text-accent); /* Figma #005b20 → --text-accent */
 }
 
 .tab-bar__tab[data-active] {

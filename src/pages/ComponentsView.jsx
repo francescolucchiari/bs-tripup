@@ -141,15 +141,16 @@ export default function ComponentsView() {
       </Section>
 
       {/* ============ ITINERARY CARD PREVIEW ============ */}
-      <Section title="ItineraryCardPreview" code="~313×80">
+      <Section title="ItineraryCardPreview" code="card-eat · glass · filled / empty">
         <div className="cv-col">
           <ItineraryCardPreview
             image="https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=200&q=60"
-            title="Sintra day trip"
-            subtitle="Sab · 09:00"
-            amount="€ 45"
+            label="Lunch"
+            title="@Lumi Rooftop"
+            amount="€47.80"
           />
-          <ItineraryCardPreview title="Cena ad Alfama" subtitle="Sab · 21:00" amount="€ 30" />
+          <ItineraryCardPreview label="Dinner" title="@Re'Tasco" amount="€110.00" />
+          <ItineraryCardPreview empty label="Dinner" title="Not planned" />
         </div>
       </Section>
 
@@ -182,11 +183,11 @@ export default function ComponentsView() {
       </Section>
 
       {/* ============ TAB BAR ============ */}
-      <Section title="TabBar" code="da Figma · full-width · Travels / Activity / Profile">
+      <Section title="TabBar" code="da Figma · pill flottante · Travels / Activity / Profile">
         <div className="cv-center">
           <TabBar active={tab} onChange={setTab} />
         </div>
-        <span className="cv-note">In una schermata reale è fissa in basso (prop `fixed`).</span>
+        <span className="cv-note">In una schermata reale galleggia in basso (prop `fixed`).</span>
       </Section>
 
       {/* ============ PROGRESS BAR ============ */}

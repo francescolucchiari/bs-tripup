@@ -34,7 +34,7 @@ export default function TabBar({ active = 'travels', onChange, tabs = DEFAULT_TA
             aria-current={isActive ? 'page' : undefined}
           >
             <span className="tab-bar__icon">
-              {avatar ? <Avatar size="xs" {...avatar} /> : <Icon size={24} strokeWidth={2.25} />}
+              {avatar ? <Avatar size="xs" {...avatar} /> : <Icon size={24} strokeWidth={1.5} />}
             </span>
             <span className="tab-bar__label">{label}</span>
           </button>
