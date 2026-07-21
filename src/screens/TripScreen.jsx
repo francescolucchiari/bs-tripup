@@ -5,6 +5,7 @@ import AvatarStack from '../components/AvatarStack'
 import TabBar from '../components/TabBar'
 import ItineraryCardPreview from '../components/ItineraryCardPreview'
 import PollFlow from '../components/PollFlow'
+import AddExpenseModal from './AddExpenseModal'
 import './TripScreen.css'
 
 /**
@@ -25,12 +26,13 @@ const ASSETS = {
   blob: '/trip/header-blob.svg',
 }
 
+// L'utente corrente ("me") è l'avatar 1 (Ana). Stato iniziale: 4 partecipanti.
+// Il 5° (Ren, avatar-5) verrà aggiunto tramite il futuro flusso "aggiungi partecipante".
 const PARTICIPANTS = [
-  { name: 'Ana', src: '/trip/avatar-1.jpg' },
-  { name: 'Bruno', src: '/trip/avatar-2.jpg' },
-  { name: 'Chiara', src: '/trip/avatar-3.jpg' },
-  { name: 'Dario', src: '/trip/avatar-4.jpg' },
-  { name: 'Fra', src: '/trip/avatar-5.jpg' },
+  { name: 'Ana', src: '/trip/avatar-1.jpg' }, // me
+  { name: 'Tom', src: '/trip/avatar-2.jpg' },
+  { name: 'Nic', src: '/trip/avatar-3.jpg' },
+  { name: 'Mara', src: '/trip/avatar-4.jpg' },
 ]
 
 const POLL_OPTIONS = [
@@ -42,27 +44,56 @@ const POLL_OPTIONS = [
 const TABS = [
   { key: 'travels', label: 'Travels', icon: Map },
   { key: 'activity', label: 'Activity', icon: Activity },
-  { key: 'profile', label: 'Profile', avatar: { name: 'Fra', src: '/trip/avatar-5.jpg' } },
+  { key: 'profile', label: 'Profile', avatar: { name: 'Ana', src: '/trip/avatar-1.jpg' } },
+]
+
+// Partecipanti della spesa (modale Add expense): il primo è "You" (chi paga).
+// A questo punto del flusso il gruppo è completo con Ren (avatar-5).
+const EXPENSE_PARTICIPANTS = [
+  { id: 'me', name: 'You', src: '/trip/avatar-1.jpg' },
+  { id: 'tom', name: 'Tom', src: '/trip/avatar-2.jpg' },
+  { id: 'nic', name: 'Nic', src: '/trip/avatar-3.jpg' },
+  { id: 'mara', name: 'Mara', src: '/trip/avatar-4.jpg' },
+  { id: 'ren', name: 'Ren', src: '/trip/avatar-5.jpg' },
 ]
 
 export default function TripScreen({ onNext, onBack }) {
   const [seg, setSeg] = useState('itinerary')
+  const [expense, setExpense] = useState(null) // { placeName } quando la modale è aperta
   const scrollRef = useRef(null)
   const tueRef = useRef(null)
+  const scrollMem = useRef(0) // posizione di scroll salvata dell'itinerario
+  const initedRef = useRef(false)
 
-  // Vista iniziale invariata: porta la riga di Tue 9 dove partiva prima,
-  // così Mon 8 resta sopra e si raggiunge scrollando verso l'alto.
+  // La vista Itinerary resta sempre montata (solo nascosta su "Expenses"),
+  // così lo stato interno — incluso il poll — non si resetta cambiando segmento.
+  //  - prima apertura: allinea Tue 9 in cima (vista iniziale invariata)
+  //  - ritorno da Expenses: ripristina la posizione di scroll salvata
   useLayoutEffect(() => {
     const s = scrollRef.current
+    if (!s || seg !== 'itinerary') return
+    if (initedRef.current) {
+      s.scrollTop = scrollMem.current
+      return
+    }
     const t = tueRef.current
-    if (!s || !t) return
+    if (!t) return
     const align = () => {
       const pt = parseFloat(getComputedStyle(s).paddingTop) || 0
       s.scrollTop = Math.max(0, t.offsetTop - pt)
     }
     align()
     document.fonts?.ready.then(align) // riallinea dopo il load dei font
+    initedRef.current = true
   }, [seg])
+
+  // Salva dove eri nell'itinerario prima di passare a un altro segmento.
+  const handleSeg = (next) => {
+    if (seg === 'itinerary' && scrollRef.current) {
+      scrollMem.current = scrollRef.current.scrollTop
+    }
+    setSeg(next)
+  }
 
   return (
     <div className="trip">
@@ -90,7 +121,7 @@ export default function TripScreen({ onNext, onBack }) {
 
           <div className="trip__intro">
             <h1 className="trip__title">Lisbon Gateway</h1>
-            <p className="trip__meta">June 6 - 10 · 5 participants</p>
+            <p className="trip__meta">June 6 - 10 · 4 participants</p>
             <div className="trip__participants">
               <AvatarStack avatars={PARTICIPANTS} max={5} size="sm" />
               <button
@@ -125,7 +156,7 @@ export default function TripScreen({ onNext, onBack }) {
                 { value: 'expenses', label: 'Expenses' },
               ]}
               value={seg}
-              onChange={setSeg}
+              onChange={handleSeg}
             />
           </div>
         </div>
@@ -133,8 +164,12 @@ export default function TripScreen({ onNext, onBack }) {
 
       {/* ---- CONTENUTO SCROLLABILE (scorre sotto il top layer) ---- */}
       <div className="trip__scroll" ref={scrollRef}>
-        {seg === 'itinerary' ? (
-          <div className="trip__timeline">
+        {/* Itinerary sempre montato (nascosto su Expenses) così lo stato del
+            poll non si resetta cambiando segmento. */}
+        <div
+          className="trip__timeline"
+          style={seg === 'itinerary' ? undefined : { display: 'none' }}
+        >
             {/* Lunedì 8 — 3 attività (immagini in arrivo) */}
             <div className="rail" data-spine="down">
               <span className="daymark">
@@ -203,14 +238,25 @@ export default function TripScreen({ onNext, onBack }) {
                 <Vote size={20} strokeWidth={2.25} />
               </span>
             </div>
-            <PollFlow question="Where should we eat tonight?" options={POLL_OPTIONS} />
-          </div>
-        ) : (
+            <PollFlow
+              question="Where should we eat tonight?"
+              options={POLL_OPTIONS}
+              onAddExpense={(place) => setExpense({ placeName: place })}
+            />
+        </div>
+        {seg === 'expenses' && (
           <p className="trip__expenses-note">Expenses — in arrivo</p>
         )}
       </div>
 
       <TabBar active="travels" tabs={TABS} fixed />
+
+      <AddExpenseModal
+        open={!!expense}
+        placeName={expense?.placeName}
+        participants={EXPENSE_PARTICIPANTS}
+        onClose={() => setExpense(null)}
+      />
     </div>
   )
 }

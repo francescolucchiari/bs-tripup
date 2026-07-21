@@ -9,25 +9,28 @@ import ItineraryUpdateCard from './ItineraryUpdateCard'
  *
  * Script (demo):
  *  1. l'utente vota (avatar `me`) → parte la sequenza
- *  2. arrivano voti simulati (INCOMING) → totale 5
+ *  2. arrivano 3 voti simulati (gli altri 3 partecipanti) → totale 4
  *  3. all-voted → countdown 5s
  *  4. a 0 → closed-celebration (coriandoli)
- *  5. ~1.5s dopo → itinerary-update (vincitore = max voti)
+ *  5. ~1.5s dopo → itinerary-update (vince sempre l'opzione votata dall'utente)
  *
  * Props:
  *  - question
  *  - options: [{ id, name, quote, image }]
  */
 
-const ME = '/trip/avatar-5.jpg'
+const ME = '/trip/avatar-1.jpg' // utente corrente
 
-// voti in arrivo dopo il mio: [opzione, avatar, ritardo(ms) dal mio voto]
-const INCOMING = [
-  { opt: 'timeout', avatar: '/trip/avatar-1.jpg', at: 1500 },
-  { opt: 'ramiro', avatar: '/trip/avatar-2.jpg', at: 3000 },
-  { opt: 'ramiro', avatar: '/trip/avatar-3.jpg', at: 4600 },
-  { opt: 'cevicheria', avatar: '/trip/avatar-4.jpg', at: 6200 },
+// Voti simulati in arrivo dopo il mio: sono gli altri 3 partecipanti del
+// viaggio (avatar 2-4), con relativo ritardo(ms). Le OPZIONI target non sono
+// fisse: vengono calcolate in base alla scelta dell'utente (vedi handleVote),
+// così la sua opzione vince sempre senza pareggi.
+const INCOMING_AVATARS = [
+  '/trip/avatar-2.jpg',
+  '/trip/avatar-3.jpg',
+  '/trip/avatar-4.jpg',
 ]
+const INCOMING_TIMES = [1500, 3000, 4600]
 
 const fmtBig = (s) => {
   const m = Math.floor(s / 60)
@@ -43,7 +46,7 @@ const addVote = (poll, optId, avatar, mine) => ({
   ),
 })
 
-export default function PollFlow({ question, options }) {
+export default function PollFlow({ question, options, onAddExpense }) {
   const [poll, setPoll] = useState(() => ({
     question,
     status: 'open',
@@ -72,10 +75,8 @@ export default function PollFlow({ question, options }) {
   useEffect(() => {
     if (closing == null) return undefined
     if (closing <= 0) {
-      setPoll((p) => {
-        const winner = [...p.options].sort((a, b) => b.voters.length - a.voters.length)[0]
-        return { ...p, status: 'closed', winnerId: winner.id }
-      })
+      // la mia opzione vince sempre (i voti simulati sono tarati apposta)
+      setPoll((p) => ({ ...p, status: 'closed', winnerId: p.myVoteId }))
       const t = setTimeout(() => setPhase('resolved'), 1500)
       timers.current.push(t)
       return undefined
@@ -84,24 +85,38 @@ export default function PollFlow({ question, options }) {
     return () => clearTimeout(id)
   }, [closing])
 
-  const handleVote = useCallback((optId) => {
-    if (startedRef.current) return
-    startedRef.current = true
-    setPoll((p) => addVote(p, optId, ME, true))
-    INCOMING.forEach((step) => {
-      const t = setTimeout(
-        () => setPoll((p) => addVote(p, step.opt, step.avatar, false)),
-        step.at,
-      )
-      timers.current.push(t)
-    })
-    // dopo l'ultimo voto: all-voted + avvio countdown 5s
-    const tv = setTimeout(() => {
-      setPoll((p) => ({ ...p, allVoted: true }))
-      setClosing(5)
-    }, INCOMING[INCOMING.length - 1].at + 400)
-    timers.current.push(tv)
-  }, [])
+  const handleVote = useCallback(
+    (optId) => {
+      if (startedRef.current) return
+      startedRef.current = true
+      setPoll((p) => addVote(p, optId, ME, true))
+
+      // Target dei voti simulati calcolati sulla scelta dell'utente:
+      // 1 voto a ciascun rivale (così ognuno tocca ≥1), i restanti alla MIA
+      // opzione → con 3 opzioni finale 3–1–1, la mia sempre in testa.
+      // I voti ai rivali arrivano prima (pareggio iniziale 1–1–1), i miei in
+      // coda (stacco finale) → "sorpasso morbido".
+      const rivals = options.map((o) => o.id).filter((id) => id !== optId)
+      const targets = [...rivals]
+      while (targets.length < INCOMING_TIMES.length) targets.push(optId)
+
+      targets.forEach((target, i) => {
+        const t = setTimeout(
+          () => setPoll((p) => addVote(p, target, INCOMING_AVATARS[i], false)),
+          INCOMING_TIMES[i],
+        )
+        timers.current.push(t)
+      })
+
+      // dopo l'ultimo voto: all-voted + avvio countdown 5s
+      const tv = setTimeout(() => {
+        setPoll((p) => ({ ...p, allVoted: true }))
+        setClosing(5)
+      }, INCOMING_TIMES[INCOMING_TIMES.length - 1] + 400)
+      timers.current.push(tv)
+    },
+    [options],
+  )
 
   const closesLabel = poll.allVoted ? `${closing ?? 0}s` : fmtBig(big)
   const winner = poll.options.find((o) => o.id === poll.winnerId)
@@ -127,6 +142,7 @@ export default function PollFlow({ question, options }) {
             image={winner?.image}
             label="Dinner"
             title={`@${winner?.name ?? ''}`}
+            onAdd={() => onAddExpense?.(winner?.name ?? '')}
           />
         </motion.div>
       )}

@@ -1,0 +1,434 @@
+/* ============================================================
+   AddExpenseModal — overlay full-screen dentro il frame
+   ============================================================ */
+
+.axp {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-page);
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.axp__header {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px 12px;
+}
+
+.axp__back {
+  position: absolute;
+  left: 24px;
+  top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--icon-primary);
+  cursor: pointer;
+}
+
+.axp__titles {
+  text-align: center;
+}
+
+.axp__title {
+  font: var(--heading-m);
+  color: var(--text-primary);
+}
+
+.axp__subtitle {
+  font: var(--caption);
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.axp__subtitle strong {
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+/* ---- Scroll ---- */
+.axp__scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---- Card generica ---- */
+.axp__card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+/* ---- Name field ---- */
+.axp__field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: 12px 16px;
+}
+
+.axp__field-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.axp__field-label {
+  font: var(--caption);
+  color: var(--text-tertiary);
+}
+
+.axp__field-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font: var(--body-l);
+  color: var(--text-primary);
+  width: 100%;
+}
+
+.axp__field-icon {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+
+/* ---- You paid ---- */
+.axp__paid {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.axp__paid-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.axp__paid-title {
+  font: var(--body-l);
+  color: var(--text-primary);
+}
+
+.axp__paid-date {
+  font: var(--caption);
+  color: var(--text-tertiary);
+}
+
+.axp__paid-amount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  flex: 0 0 auto;
+  border-bottom: 1.5px solid var(--border-subtle);
+  padding-bottom: 2px;
+  color: var(--text-on-amount);
+}
+
+.axp__paid-cur {
+  font: var(--heading-m);
+  letter-spacing: var(--tracking-tight);
+}
+
+.axp__paid-input {
+  width: 82px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: var(--heading-m);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-on-amount);
+  text-align: right;
+}
+
+.axp__paid-input::placeholder {
+  color: var(--text-disabled);
+}
+
+/* ---- You are owed (accordion closed) ---- */
+.axp__owed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 16px;
+  background: var(--bg-accent);
+  color: var(--text-accent);
+  cursor: pointer;
+}
+
+.axp__owed-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.axp__owed-label {
+  font: var(--body-m-bold);
+}
+
+.axp__owed-value {
+  font: var(--heading-s);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+}
+
+.axp__owed-details {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font: var(--body-m-bold);
+}
+
+/* ---- Segmented ---- */
+.axp__segmented {
+  padding: 4px 0;
+}
+
+/* ---- Amount: total division ---- */
+.axp__card-title {
+  display: block;
+  font: var(--body-l);
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.axp__people {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.axp__person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.axp__person-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.axp__person-name {
+  font: var(--body-l);
+  color: var(--text-primary);
+}
+
+.axp__person-sub {
+  font: var(--caption);
+  color: var(--text-tertiary);
+}
+
+.axp__person-amount {
+  flex: 0 0 auto;
+  font: var(--body-l);
+  color: var(--text-on-amount);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* ---- Placeholder (Percent) ---- */
+.axp__placeholder {
+  text-align: center;
+  color: var(--text-tertiary);
+  font: var(--body-m);
+}
+
+/* ---- Split by items ---- */
+.axp__split-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.axp__split-empty-text {
+  font: var(--body-l);
+  color: var(--text-primary);
+}
+
+.axp__assigned {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  background: var(--bg-warning-subtle);
+  color: var(--text-warning);
+  font: var(--caption);
+  font-weight: 700;
+}
+
+.axp__assigned[data-complete] {
+  background: var(--bg-accent-subtle);
+  color: var(--green-800);
+}
+
+.axp__split {
+  overflow: hidden;
+}
+
+.axp__split-sep {
+  display: block;
+  height: 1px;
+  background: var(--border-default);
+  margin: 14px 0;
+}
+
+.axp__split-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.axp__split-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: none;
+  border-bottom: 1px dashed var(--border-subtle);
+  outline: none;
+  background: transparent;
+  font: var(--body-l);
+  color: var(--text-primary);
+  padding-bottom: 2px;
+}
+
+.axp__split-name::placeholder {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.axp__split-cost {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 2px;
+  font: var(--body-l);
+  color: var(--text-on-amount);
+  letter-spacing: var(--tracking-tight);
+}
+
+.axp__split-cost input {
+  width: 58px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: right;
+}
+
+.axp__split-divided {
+  display: block;
+  font: var(--caption);
+  color: var(--text-tertiary);
+  margin: 10px 0 8px;
+}
+
+.axp__split-people {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.axp__pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.axp__pick-av {
+  position: relative;
+  display: inline-flex;
+  border-radius: 50%;
+  transition: box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.axp__pick[data-on] .axp__pick-av {
+  box-shadow: 0 0 0 2px var(--border-accent);
+}
+
+.axp__pick:not([data-on]) .axp__pick-av {
+  opacity: 0.45;
+}
+
+.axp__pick-check {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--bg-cta);
+  color: var(--icon-inverse);
+  box-shadow: 0 0 0 2px var(--bg-primary);
+}
+
+.axp__pick-name {
+  font: var(--caption);
+  color: var(--text-secondary);
+}
+
+.axp__pick:not([data-on]) .axp__pick-name {
+  color: var(--text-tertiary);
+}
+
+.axp__split-add {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+/* ---- Footer ---- */
+.axp__footer {
+  flex: 0 0 auto;
+  padding: 12px 24px 28px;
+  background: var(--bg-page);
+}

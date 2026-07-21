@@ -21,6 +21,12 @@
   box-shadow: 0 2px 6px var(--shadow-default);
 }
 
+/* CTA "Add" in hug: annulla il min-width dello size md così il bottone
+   prende solo lo spazio del suo contenuto (senza toccare gli altri md). */
+.itin-update .itinerary-card__action .btn {
+  min-width: 0;
+}
+
 .itin-update__actions {
   margin-top: -16px; /* la card sopra sfalsa e copre il bordo del pannello */
   display: flex;

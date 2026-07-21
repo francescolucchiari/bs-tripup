@@ -240,10 +240,10 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge legacy */
   padding-top: var(--top-h);
-  /* Con il poll (card alta) il contenuto scrolla naturalmente: basta lo
-     spazio per la TabBar flottante a fine scroll. La home resta "Tue sbucca
-     sotto il blur" (l'effetto porta Tue a 190); il poll si vede scrollando. */
-  padding-bottom: 120px;
+  /* Spazio a fine scroll: oltre all'ingombro della TabBar fissa, teniamo
+     ≥140px di respiro tra l'ultima card e la tab bar, così il vincitore del
+     poll (l'ultima "opzione") resta in evidenza e non appiccicato in basso. */
+  padding-bottom: 240px;
 }
 
 /* nasconde la scrollbar nativa (Chrome/Safari) */
