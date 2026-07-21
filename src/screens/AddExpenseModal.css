@@ -154,7 +154,10 @@
 }
 
 .axp__paid-cur {
-  font: var(--heading-m);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
   letter-spacing: var(--tracking-tight);
 }
 
@@ -163,7 +166,10 @@
   border: none;
   outline: none;
   background: transparent;
-  font: var(--heading-m);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
   letter-spacing: var(--tracking-tight);
   color: var(--text-on-amount);
   text-align: right;
@@ -199,8 +205,10 @@
 }
 
 .axp__owed-value {
-  font: var(--heading-s);
+  font-family: var(--font-body);
   font-weight: 700;
+  font-size: 16px;
+  line-height: 1.4;
   letter-spacing: var(--tracking-tight);
 }
 
@@ -228,6 +236,9 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .axp__person {
@@ -255,7 +266,7 @@
 
 .axp__person-amount {
   flex: 0 0 auto;
-  font: var(--body-l);
+  font: var(--body-m-bold);
   color: var(--text-on-amount);
   letter-spacing: var(--tracking-tight);
 }
@@ -342,7 +353,7 @@
   flex: 0 0 auto;
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 2px;
-  font: var(--body-l);
+  font: var(--body-m-bold);
   color: var(--text-on-amount);
   letter-spacing: var(--tracking-tight);
 }
