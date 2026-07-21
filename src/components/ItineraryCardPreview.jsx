@@ -15,6 +15,7 @@ import './ItineraryCardPreview.css'
  *  - label:  eyebrow piccolo in alto (es. "Lunch", "Dinner")
  *  - title:  luogo / titolo (es. "@Lumi Rooftop", "Not planned")
  *  - amount: importo a destra già formattato (es. "€47.80")
+ *  - action: nodo React a destra al posto dell'importo (es. bottone "Add")
  *  - empty:  stato "da pianificare"
  *  - onClick
  */
@@ -23,6 +24,7 @@ export default function ItineraryCardPreview({
   label,
   title,
   amount,
+  action,
   empty = false,
   onClick,
 }) {
@@ -47,9 +49,11 @@ export default function ItineraryCardPreview({
         {label && <span className="itinerary-card__label">{label}</span>}
         {title && <span className="itinerary-card__title">{title}</span>}
       </span>
-      {!empty && amount != null && (
+      {action ? (
+        <span className="itinerary-card__action">{action}</span>
+      ) : !empty && amount != null ? (
         <span className="itinerary-card__amount">{amount}</span>
-      )}
+      ) : null}
     </Wrapper>
   )
 }

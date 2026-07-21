@@ -139,6 +139,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
+  padding: 0; /* reset padding UA del button, altrimenti schiaccia l'icona */
   border: none;
   background: none;
   color: var(--icon-primary);
@@ -236,11 +237,19 @@
   inset: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge legacy */
   padding-top: var(--top-h);
-  /* Tarato così lo scroll massimo coincide con la vista "Tue sbucca sotto il
-     blur, Wed in evidenza" (identica a prima); Mon 8 si raggiunge scrollando
-     su. blocco Tue/Wed = 376px → padding-bottom = 798-190-376 = 232. */
-  padding-bottom: 232px;
+  /* Con il poll (card alta) il contenuto scrolla naturalmente: basta lo
+     spazio per la TabBar flottante a fine scroll. La home resta "Tue sbucca
+     sotto il blur" (l'effetto porta Tue a 190); il poll si vede scrollando. */
+  padding-bottom: 120px;
+}
+
+/* nasconde la scrollbar nativa (Chrome/Safari) */
+.trip__scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .trip__expenses-note {
@@ -257,7 +266,10 @@
   column-gap: 12px;
   row-gap: 16px;
   align-items: center;
-  padding: 0 24px 0 16px; /* rail a 16px dal margine sx · card a 24px dal dx */
+  /* padding-top: spazio sopra Mon 8 così, a fine scroll in alto, la prima
+     card scende sotto la fascia blur/segmented ed è visibile al 100%.
+     Non tocca la home: l'offset iniziale si ricalcola su --top-h. */
+  padding: 68px 24px 0 16px; /* rail a 16px dal margine sx · card a 24px dal dx */
 }
 
 /* la card riempie la cella della griglia (non la sua width fissa 313),
@@ -348,4 +360,22 @@
   height: 12px;
   border-radius: 999px;
   background: var(--green-400);
+}
+
+/* riga poll: marker allineato in alto (la card è molto più alta) */
+.rail[data-align='top'] {
+  align-self: start;
+  padding-top: 8px;
+}
+
+.daymark__poll {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--icon-accent);
+  background: var(--bg-page);
 }

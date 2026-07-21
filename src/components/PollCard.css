@@ -1,0 +1,163 @@
+/* ============================================================
+   PollCard — sondaggio inline dell'itinerario
+   ============================================================ */
+
+.poll {
+  position: relative;
+  width: 100%;
+  padding: 16px 16px 24px;
+  border: 1px solid var(--border-default);
+  border-radius: 24px;
+  background: var(--bg-primary);
+}
+
+/* attivo: bordo arancio + inner-glow che pulsa (interpola blur/spread) */
+@keyframes poll-glow-pulse {
+  0%,
+  100% {
+    box-shadow: inset 0 0 12px 1px var(--orange-200);
+  }
+  50% {
+    box-shadow: inset 0 0 5px -1px var(--orange-200);
+  }
+}
+
+.poll[data-status='open'] {
+  border-color: var(--orange-200);
+  animation: poll-glow-pulse 2.4s ease-in-out infinite;
+}
+
+.poll[data-status='closed'] {
+  border-color: var(--border-default);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poll[data-status='open'] {
+    animation: none;
+    box-shadow: inset 0 0 9px var(--orange-200);
+  }
+}
+
+/* ---- Head ---- */
+.poll__head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.poll__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.poll__won {
+  font: var(--caption);
+  color: var(--text-secondary);
+}
+
+.poll__title {
+  font: var(--heading-m);
+  color: var(--green-800);
+}
+
+/* ---- Options ---- */
+.poll__options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.poll__options:not([data-dense]) {
+  gap: 20px;
+}
+
+.poll-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.poll__options:not([data-dense]) .poll-option {
+  gap: 8px;
+}
+
+.poll-option__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.poll-option__info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.poll-option__name {
+  font: var(--body-l);
+  color: var(--green-800);
+}
+
+.poll-option__quote {
+  font: var(--caption);
+  color: var(--text-secondary);
+}
+
+.poll-option__tally {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.poll-option__avatars {
+  display: flex;
+  align-items: center;
+}
+
+.poll-option__avatar {
+  display: inline-flex;
+  transform-origin: center center;
+}
+
+.poll-option__count {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--green-800);
+}
+
+.poll-option__barwrap {
+  padding-left: 36px; /* 24 marker + 12 gap */
+}
+
+.poll .radio__circle:not([data-checked]) {
+  border-color: var(--gray-500);
+}
+
+.poll .progress {
+  background: var(--gray-300);
+}
+
+/* ---- Confetti (stato closed): cadono in fade-out verso il basso ---- */
+.poll__confetti {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.poll__confetti-item {
+  position: absolute;
+  font-size: 24px;
+  line-height: 1;
+}

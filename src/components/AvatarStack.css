@@ -7,6 +7,12 @@
   align-items: center;
 }
 
+/* flex: evita la line-box (e il suo spazio descender ~6px sotto l'avatar),
+   così lo stack è alto quanto l'avatar e resta centrato nel contenitore */
+.avatar-stack__item {
+  display: flex;
+}
+
 .avatar-stack__item:not(:first-child) {
   margin-left: -8px;
 }

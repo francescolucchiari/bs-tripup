@@ -1,5 +1,5 @@
 /* ============================================================
-   Badge — pill ~96×24 (larghezza adattiva al contenuto)
+   Badge — pill (larghezza adattiva al contenuto)
    ============================================================ */
 
 .badge {
@@ -12,8 +12,21 @@
   border-radius: 8px;
   font: var(--tiny);
   letter-spacing: var(--tracking-tight);
-  text-transform: uppercase;
   white-space: nowrap;
+}
+
+.badge[data-uppercase] {
+  text-transform: uppercase;
+}
+
+/* size md: 12px sentence-case, padding e icona più grandi (poll) */
+.badge[data-size='md'] {
+  height: auto;
+  padding: 4px 10px 4px 8px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.2;
 }
 
 .badge[data-variant='accent'] {
@@ -29,4 +42,9 @@
 .badge[data-variant='warning'] {
   background: var(--bg-warning-subtle);
   color: var(--text-warning);
+}
+
+.badge[data-variant='success'] {
+  background: var(--bg-accent-subtle);
+  color: var(--green-800);
 }

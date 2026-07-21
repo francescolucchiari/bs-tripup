@@ -9,6 +9,8 @@ import {
   Accordion,
   Toast,
   ItineraryCardPreview,
+  PollCard,
+  ItineraryUpdateCard,
   TabBar,
   SegmentedControl,
   ScreenHeader,
@@ -28,6 +30,34 @@ const PEOPLE = [
   { name: 'Dario' },
   { name: 'Elena' },
 ]
+
+// ---- Mock poll (tutti gli stati) ----
+const AV = ['/trip/avatar-1.jpg', '/trip/avatar-2.jpg', '/trip/avatar-3.jpg', '/trip/avatar-4.jpg']
+const POLL_OPTS = [
+  { id: 'timeout', name: 'Time Out Market', quote: 'Classy and very tasty' },
+  { id: 'ramiro', name: 'Ramiro', quote: 'Great steaks!' },
+  { id: 'cevicheria', name: 'A Cevicheria', quote: 'Typical portuguese food' },
+]
+const mkPoll = (extra, voters) => ({
+  question: 'Where should we eat tonight?',
+  status: 'open',
+  closesLabel: '29m 23s',
+  allVoted: false,
+  myVoteId: null,
+  winnerId: null,
+  options: POLL_OPTS.map((o, i) => ({ ...o, voters: voters[i] })),
+  ...extra,
+})
+const POLL_EMPTY = mkPoll({}, [[], [], []])
+const POLL_VOTED = mkPoll({ myVoteId: 'ramiro' }, [[], [AV[0]], []])
+const POLL_FULL = mkPoll(
+  { myVoteId: 'ramiro', allVoted: true, closesLabel: '5s' },
+  [[AV[1]], [AV[3], AV[0]], [AV[2]]],
+)
+const POLL_CLOSED = mkPoll(
+  { status: 'closed', winnerId: 'ramiro', myVoteId: 'ramiro' },
+  [[AV[1]], [AV[3], AV[0]], [AV[2]]],
+)
 
 function Section({ title, code, children }) {
   return (
@@ -151,6 +181,23 @@ export default function ComponentsView() {
           />
           <ItineraryCardPreview label="Dinner" title="@Re'Tasco" amount="€110.00" />
           <ItineraryCardPreview empty label="Dinner" title="Not planned" />
+        </div>
+      </Section>
+
+      {/* ============ POLL CARD ============ */}
+      <Section title="PollCard" code="empty · voted · full-voted · closed">
+        <div className="cv-col">
+          <PollCard poll={POLL_EMPTY} />
+          <PollCard poll={POLL_VOTED} />
+          <PollCard poll={POLL_FULL} />
+          <PollCard poll={POLL_CLOSED} />
+        </div>
+      </Section>
+
+      {/* ============ ITINERARY UPDATE CARD ============ */}
+      <Section title="ItineraryUpdateCard" code="esito poll · Add + Call / Book">
+        <div className="cv-col">
+          <ItineraryUpdateCard image="/trip/eat-retasco.jpg" title="@Ramiro" />
         </div>
       </Section>
 

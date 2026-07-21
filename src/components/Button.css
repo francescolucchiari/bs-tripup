@@ -57,6 +57,16 @@
   background: var(--bg-accent);
 }
 
+/* ---- Variant: dark (verde molto scuro, testo bianco — es. "Add") ---- */
+.btn[data-variant='dark'] {
+  background: var(--green-900);
+  color: var(--text-inverse);
+}
+.btn[data-variant='dark']:active:not(:disabled),
+.btn[data-variant='dark'][data-pressed] {
+  background: var(--black);
+}
+
 /* ---- Disabled ---- */
 .btn:disabled {
   background: var(--bg-secondary);

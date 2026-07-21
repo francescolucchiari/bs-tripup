@@ -85,3 +85,8 @@ button.itinerary-card {
   font-weight: 700;
   color: var(--text-secondary);
 }
+
+.itinerary-card__action {
+  flex: 0 0 auto;
+  display: inline-flex;
+}

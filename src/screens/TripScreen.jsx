@@ -1,9 +1,10 @@
 import { useState, useRef, useLayoutEffect } from 'react'
-import { ChevronLeft, Plus, Pencil, Map, Activity } from 'lucide-react'
+import { ChevronLeft, Plus, Pencil, Map, Activity, Vote } from 'lucide-react'
 import SegmentedControl from '../components/SegmentedControl'
 import AvatarStack from '../components/AvatarStack'
 import TabBar from '../components/TabBar'
 import ItineraryCardPreview from '../components/ItineraryCardPreview'
+import PollFlow from '../components/PollFlow'
 import './TripScreen.css'
 
 /**
@@ -29,6 +30,13 @@ const PARTICIPANTS = [
   { name: 'Bruno', src: '/trip/avatar-2.jpg' },
   { name: 'Chiara', src: '/trip/avatar-3.jpg' },
   { name: 'Dario', src: '/trip/avatar-4.jpg' },
+  { name: 'Fra', src: '/trip/avatar-5.jpg' },
+]
+
+const POLL_OPTIONS = [
+  { id: 'timeout', name: 'Time Out Market', quote: 'Classy and very tasty', image: '/trip/eat-timeout.jpg' },
+  { id: 'ramiro', name: 'Ramiro', quote: 'Great steaks!', image: '/trip/eat-retasco.jpg' },
+  { id: 'cevicheria', name: 'A Cevicheria', quote: 'Typical portuguese food', image: '/trip/eat-lumi.jpg' },
 ]
 
 const TABS = [
@@ -82,15 +90,15 @@ export default function TripScreen({ onNext, onBack }) {
 
           <div className="trip__intro">
             <h1 className="trip__title">Lisbon Gateway</h1>
-            <p className="trip__meta">June 6 - 10 · 4 participants</p>
+            <p className="trip__meta">June 6 - 10 · 5 participants</p>
             <div className="trip__participants">
-              <AvatarStack avatars={PARTICIPANTS} max={4} size="sm" />
+              <AvatarStack avatars={PARTICIPANTS} max={5} size="sm" />
               <button
                 className="trip__add"
                 onClick={onNext}
                 aria-label="Aggiungi partecipante"
               >
-                <Plus size={20} strokeWidth={2.25} />
+                <Plus size={24} strokeWidth={2} />
               </button>
             </div>
           </div>
@@ -190,10 +198,12 @@ export default function TripScreen({ onNext, onBack }) {
               amount="€76.00"
             />
 
-            <div className="rail" data-spine="up">
-              <span className="daymark__dot" />
+            <div className="rail" data-spine="up" data-align="top">
+              <span className="daymark__poll">
+                <Vote size={20} strokeWidth={2.25} />
+              </span>
             </div>
-            <ItineraryCardPreview empty label="Dinner" title="Not planned" />
+            <PollFlow question="Where should we eat tonight?" options={POLL_OPTIONS} />
           </div>
         ) : (
           <p className="trip__expenses-note">Expenses — in arrivo</p>

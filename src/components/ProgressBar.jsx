@@ -7,13 +7,15 @@ import './ProgressBar.css'
  * Props:
  *  - value: 0-100
  *  - tone:  'accent' (default, lime) | 'strong' (verde scuro)
+ *  - size:  'sm' (default, 8px) | 'md' (10px, usata dal poll)
  */
-export default function ProgressBar({ value = 0, tone = 'accent' }) {
+export default function ProgressBar({ value = 0, tone = 'accent', size = 'sm' }) {
   const pct = Math.max(0, Math.min(100, value))
   return (
     <div
       className="progress"
       data-tone={tone}
+      data-size={size}
       role="progressbar"
       aria-valuenow={pct}
       aria-valuemin={0}

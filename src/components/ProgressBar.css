@@ -10,6 +10,10 @@
   overflow: hidden;
 }
 
+.progress[data-size='md'] {
+  height: 10px;
+}
+
 .progress__fill {
   display: block;
   height: 100%;

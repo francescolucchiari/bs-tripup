@@ -1,0 +1,18 @@
+/* ============================================================
+   RollingNumber — odometro verticale a una cifra
+   ============================================================ */
+
+.rolling-number {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  overflow: hidden;
+  height: 1em;
+  line-height: 1;
+  vertical-align: bottom;
+}
+
+.rolling-number__val {
+  display: inline-block;
+  line-height: 1;
+}
