@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, ChevronDown, Pencil, Plus, Check } from 'lucide-react'
+import { ChevronLeft, ChevronDown, Pencil, Plus, Check, Minus } from 'lucide-react'
 import SegmentedControl from '../components/SegmentedControl'
 import Button from '../components/Button'
 import Avatar from '../components/Avatar'
@@ -78,9 +78,31 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
 
   /* ---- azioni split ---- */
   const addSplit = () =>
-    setSplits((s) => [...s, { id: `split-${SPLIT_SEQ++}`, name: '', cost: '', members: [] }])
+    setSplits((s) => {
+      const isFirst = s.length === 0
+      const assignedCents = s.reduce(
+        (sum, sp) => sum + Math.round(parseAmt(sp.cost) * 100),
+        0,
+      )
+      const remainingCents = Math.max(0, paidCents - assignedCents)
+      // 1ª split: importo vuoto (da inserire). Successive: prefill col rimanente
+      // (totale − già assegnato), così non serve la sottrazione a mente.
+      const cost =
+        isFirst || remainingCents === 0 ? '' : (remainingCents / 100).toFixed(2)
+      // di default lo split è diviso tra TUTTI i partecipanti
+      return [
+        ...s,
+        {
+          id: `split-${SPLIT_SEQ++}`,
+          name: '',
+          cost,
+          members: participants.map((p) => p.id),
+        },
+      ]
+    })
   const updateSplit = (id, patch) =>
     setSplits((s) => s.map((sp) => (sp.id === id ? { ...sp, ...patch } : sp)))
+  const removeSplit = (id) => setSplits((s) => s.filter((sp) => sp.id !== id))
   const toggleMember = (id, pid) =>
     setSplits((s) =>
       s.map((sp) =>
@@ -215,7 +237,7 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
                     </Button>
                   </div>
                 ) : (
-                  <div className="axp__card axp__split-card">
+                  <div className="axp__split-stack">
                     <div
                       className="axp__assigned"
                       data-complete={items.assigned === paidCents && paidCents > 0 || undefined}
@@ -226,8 +248,9 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
                       {fmt(items.assigned)} of {fmt(paidCents)} assigned
                     </div>
 
+                    <div className="axp__card axp__split-card">
                     <AnimatePresence initial={false}>
-                      {splits.map((s, idx) => (
+                      {splits.map((s) => (
                         <motion.div
                           key={s.id}
                           className="axp__split"
@@ -236,7 +259,6 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.28, ease: 'easeOut' }}
                         >
-                          {idx > 0 && <span className="axp__split-sep" />}
                           <div className="axp__split-head">
                             <input
                               className="axp__split-name"
@@ -244,17 +266,31 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
                               onChange={(e) => updateSplit(s.id, { name: e.target.value })}
                               placeholder="e.g. food"
                             />
-                            <label className="axp__split-cost">
-                              <span>€</span>
-                              <input
-                                inputMode="decimal"
-                                value={s.cost}
-                                onChange={(e) =>
-                                  updateSplit(s.id, { cost: e.target.value.replace(/[^\d.,]/g, '') })
-                                }
-                                placeholder="0.00"
-                              />
-                            </label>
+                            <div className="axp__split-right">
+                              <label className="axp__split-cost">
+                                <span>€</span>
+                                <input
+                                  inputMode="decimal"
+                                  value={s.cost}
+                                  onChange={(e) =>
+                                    updateSplit(s.id, {
+                                      cost: e.target.value.replace(/[^\d.,]/g, ''),
+                                    })
+                                  }
+                                  placeholder="0.00"
+                                />
+                              </label>
+                              {splits.length >= 2 && (
+                                <button
+                                  type="button"
+                                  className="axp__split-delete"
+                                  onClick={() => removeSplit(s.id)}
+                                  aria-label="Elimina split"
+                                >
+                                  <Minus size={16} strokeWidth={3} />
+                                </button>
+                              )}
+                            </div>
                           </div>
                           <span className="axp__split-divided">Divided by {s.members.length}</span>
                           <div className="axp__split-people">
@@ -286,10 +322,11 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
                       ))}
                     </AnimatePresence>
 
-                    <div className="axp__split-add">
-                      <Button variant="secondary" size="md" icon={Plus} onClick={addSplit}>
-                        Add split
-                      </Button>
+                      <div className="axp__split-add">
+                        <Button variant="secondary" size="md" icon={Plus} onClick={addSplit}>
+                          Add split
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}

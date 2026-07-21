@@ -292,79 +292,128 @@
   color: var(--text-primary);
 }
 
+/* stack: banner "assigned" (linguetta) + card che lo sovrappone */
+.axp__split-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+/* banner "assigned" come linguetta grigia sopra la card (offset -16) */
 .axp__assigned {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 6px 12px;
-  margin-bottom: 14px;
-  border-radius: 8px;
-  background: var(--bg-warning-subtle);
+  gap: 8px;
+  padding: 8px 8px 24px; /* la card ne copre gli ultimi 16px */
+  margin-bottom: -16px;
+  border-radius: 16px 16px 0 0;
+  background: var(--bg-secondary);
   color: var(--text-warning);
   font: var(--caption);
   font-weight: 700;
 }
 
 .axp__assigned[data-complete] {
-  background: var(--bg-accent-subtle);
   color: var(--green-800);
+}
+
+/* la card sta sopra il banner e lo copre nell'overlap */
+.axp__split-card {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 2px 6px var(--shadow-default);
 }
 
 .axp__split {
   overflow: hidden;
 }
 
-.axp__split-sep {
-  display: block;
-  height: 1px;
-  background: var(--border-default);
-  margin: 14px 0;
+/* spazio tra split (niente più linea di separazione: i box già separano) */
+.axp__split + .axp__split {
+  margin-top: 20px;
 }
 
 .axp__split-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: center;
+  gap: 16px;
+}
+
+/* campo importo + eventuale pulsante elimina, raggruppati a destra */
+.axp__split-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.axp__split-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border: none;
+  border-radius: 999px;
+  background: var(--bg-danger);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.axp__split-delete:active {
+  transform: scale(0.92);
+}
+
+/* ---- Campi nome/importo come veri input-field (box) ---- */
+.axp__split-name,
+.axp__split-cost {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  padding: 8px 12px;
+  font: var(--body-l);
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
 }
 
 .axp__split-name {
-  flex: 1 1 auto;
-  min-width: 0;
-  border: none;
-  border-bottom: 1px dashed var(--border-subtle);
   outline: none;
-  background: transparent;
-  font: var(--body-l);
-  color: var(--text-primary);
-  padding-bottom: 2px;
+}
+
+.axp__split-name:focus-within,
+.axp__split-cost:focus-within {
+  border-color: var(--border-accent);
 }
 
 .axp__split-name::placeholder {
   color: var(--text-tertiary);
   font-style: italic;
+  font-weight: 400;
 }
 
 .axp__split-cost {
-  display: inline-flex;
-  align-items: baseline;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   gap: 2px;
-  flex: 0 0 auto;
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 2px;
-  font: var(--body-m-bold);
-  color: var(--text-on-amount);
-  letter-spacing: var(--tracking-tight);
 }
 
 .axp__split-cost input {
-  width: 58px;
+  field-sizing: content; /* si stringe sul contenuto → "€100" compatto */
+  width: auto;
+  min-width: 3ch;
+  max-width: 92px;
   border: none;
   outline: none;
   background: transparent;
   font: inherit;
   color: inherit;
+  letter-spacing: inherit;
   text-align: right;
 }
 
