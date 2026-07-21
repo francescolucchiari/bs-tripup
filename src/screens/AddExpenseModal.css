@@ -31,6 +31,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
+  padding: 0; /* reset padding UA del button, altrimenti schiaccia l'icona */
   border: none;
   background: none;
   color: var(--icon-primary);

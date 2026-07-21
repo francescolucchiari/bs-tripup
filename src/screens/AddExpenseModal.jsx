@@ -133,7 +133,7 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
           {/* Header */}
           <header className="axp__header">
             <button className="axp__back" onClick={onClose} aria-label="Chiudi">
-              <ChevronLeft size={24} strokeWidth={2.25} />
+              <ChevronLeft size={24} strokeWidth={2} />
             </button>
             <div className="axp__titles">
               <h1 className="axp__title">Add expense</h1>

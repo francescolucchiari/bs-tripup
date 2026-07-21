@@ -1,12 +1,15 @@
-import { useState, useRef, useLayoutEffect } from 'react'
+import { useState, useRef, useLayoutEffect, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, Plus, Pencil, Map, Activity, Vote } from 'lucide-react'
 import SegmentedControl from '../components/SegmentedControl'
 import AvatarStack from '../components/AvatarStack'
 import TabBar from '../components/TabBar'
+import Toast from '../components/Toast'
 import ItineraryCardPreview from '../components/ItineraryCardPreview'
 import PollFlow from '../components/PollFlow'
 import AddExpenseModal from './AddExpenseModal'
 import CreatePollModal from './CreatePollModal'
+import AddMemberModal from './AddMemberModal'
 import './TripScreen.css'
 
 /**
@@ -34,6 +37,19 @@ const PARTICIPANTS = [
   { name: 'Tom', src: '/trip/avatar-2.jpg' },
   { name: 'Nic', src: '/trip/avatar-3.jpg' },
   { name: 'Mara', src: '/trip/avatar-4.jpg' },
+]
+
+// Ren che entra nel gruppo via modale Add member.
+const REN = { name: 'Ren', src: '/trip/avatar-5.jpg' }
+
+// Amici frequenti (modale Add member). Il primo è Ren (invitabile);
+// gli altri sono mock. Immagini in attesa: friend-justin/olivia/michael.jpg
+// (finché mancano, l'Avatar mostra l'iniziale).
+const COMPANIONS = [
+  { id: 'ren', name: 'Ren Okafor', src: '/trip/avatar-5.jpg' },
+  { id: 'justin', name: 'Justin Voyager', src: null },
+  { id: 'olivia', name: 'Olivia Marker', src: null },
+  { id: 'michael', name: 'Michael Scott', src: null },
 ]
 
 // Immagini delle opzioni: in attesa degli export (vedi nomenclatura opt-*).
@@ -65,6 +81,26 @@ export default function TripScreen({ onNext, onBack }) {
   const [expense, setExpense] = useState(null) // { placeName } quando la modale è aperta
   const [createOpen, setCreateOpen] = useState(false) // modale "Create new poll"
   const [pollCreated, setPollCreated] = useState(false) // poll attivo nell'itinerario
+  const [memberOpen, setMemberOpen] = useState(false) // modale "Add member"
+  const [participants, setParticipants] = useState(PARTICIPANTS)
+  const [joinToast, setJoinToast] = useState(false) // toast "Ren joined your trip!"
+  const joinTimers = useRef([])
+
+  useEffect(() => () => joinTimers.current.forEach(clearTimeout), [])
+
+  // Continue dalla modale: chiudi; se Ren è stato invitato, dopo qualche
+  // secondo entra nel gruppo (avatar + conteggio) col toast di conferma.
+  const handleMemberContinue = (invited) => {
+    setMemberOpen(false)
+    if (!invited || participants.some((p) => p.name === REN.name)) return
+    joinTimers.current.push(
+      setTimeout(() => {
+        setParticipants((p) => [...p, REN])
+        setJoinToast(true)
+        joinTimers.current.push(setTimeout(() => setJoinToast(false), 2200))
+      }, 2000),
+    )
+  }
   const scrollRef = useRef(null)
   const tueRef = useRef(null)
   const scrollMem = useRef(0) // posizione di scroll salvata dell'itinerario
@@ -126,12 +162,14 @@ export default function TripScreen({ onNext, onBack }) {
 
           <div className="trip__intro">
             <h1 className="trip__title">Lisbon Gateway</h1>
-            <p className="trip__meta">June 6 - 10 · 4 participants</p>
+            <p className="trip__meta">
+              June 6 - 10 · {participants.length} participants
+            </p>
             <div className="trip__participants">
-              <AvatarStack avatars={PARTICIPANTS} max={5} size="sm" />
+              <AvatarStack avatars={participants} max={5} size="sm" />
               <button
                 className="trip__add"
-                onClick={onNext}
+                onClick={() => setMemberOpen(true)}
                 aria-label="Aggiungi partecipante"
               >
                 <Plus size={24} strokeWidth={2} />
@@ -271,6 +309,29 @@ export default function TripScreen({ onNext, onBack }) {
       </div>
 
       <TabBar active="travels" tabs={TABS} fixed />
+
+      {/* Toast "Ren joined" — fade in/out sopra la tab bar */}
+      <AnimatePresence>
+        {joinToast && (
+          <motion.div
+            className="trip__toast"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+          >
+            <Toast>Ren joined your trip!</Toast>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AddMemberModal
+        open={memberOpen}
+        participants={participants}
+        companions={COMPANIONS}
+        onClose={() => setMemberOpen(false)}
+        onContinue={handleMemberContinue}
+      />
 
       <CreatePollModal
         open={createOpen}

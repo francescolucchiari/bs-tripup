@@ -1,0 +1,190 @@
+/* ============================================================
+   AddMemberModal — bottom-sheet "Add to “Lisbon Gateway”"
+   Overlay scuro + pannello che sale dal basso (raggio 32 in alto).
+   ============================================================ */
+
+.amm {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+}
+
+.amm__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.amm__sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 80%; /* ~679px sul frame 852 */
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-page);
+  border-radius: 32px 32px 0 0;
+  overflow: hidden;
+}
+
+/* ---- Header ---- */
+.amm__header {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 24px 16px;
+}
+
+.amm__title {
+  font: var(--heading-m);
+  color: var(--text-primary);
+}
+
+.amm__close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: none;
+  border-radius: 999px;
+  background: var(--gray-300);
+  color: var(--icon-primary);
+  cursor: pointer;
+}
+
+/* ---- Scroll ---- */
+.amm__scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 24px 110px; /* spazio per il footer sfumato */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---- Cluster bubble + conteggio ---- */
+.amm__bubbles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.amm__cluster {
+  position: relative;
+  width: 109px;
+  height: 75px;
+}
+
+.amm__bubble {
+  position: absolute;
+  display: inline-flex;
+}
+
+.amm__count {
+  font: var(--body-m);
+  color: var(--text-accent);
+  text-align: center;
+}
+
+/* ---- Search (mock) ---- */
+.amm__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  color: var(--icon-primary);
+}
+
+.amm__search span {
+  font: var(--body-l);
+  color: var(--text-disabled);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* ---- Riga toggle ---- */
+.amm__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.amm__row-label {
+  font: var(--body-l);
+  color: var(--text-accent);
+}
+
+/* ---- Companions ---- */
+.amm__companions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.amm__section-title {
+  font: var(--body-l);
+  color: var(--text-accent);
+}
+
+.amm__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.amm__person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.amm__person-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: 400 16px/1.35 var(--font-body);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* avatar list 32px (tra xs 24 e md 40 del DS) */
+.amm__person .avatar {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+/* CTA "Add"/"Invite sent" in hug */
+.amm__person .btn {
+  min-width: 0;
+}
+
+/* ---- Footer: fascia sfumata + CTA ---- */
+.amm__footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 28px 24px 32px;
+  background: linear-gradient(
+    to top,
+    var(--bg-primary) 55%,
+    rgba(255, 255, 255, 0)
+  );
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}

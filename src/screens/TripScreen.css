@@ -259,6 +259,17 @@
   color: var(--text-secondary);
 }
 
+/* ---- Toast "joined" — centrato sopra la tab bar ---- */
+.trip__toast {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 108px; /* sopra la tab bar flottante */
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+}
+
 /* ---- TIMELINE (rail + card per riga) ---- */
 .trip__timeline {
   display: grid;

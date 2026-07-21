@@ -49,6 +49,19 @@ button {
   cursor: pointer;
 }
 
+/* Dentro il frame mobile nessuna scrollbar visibile (iOS-like):
+   vale per ogni contenitore scrollabile presente o futuro. */
+.mobile-frame,
+.mobile-frame * {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge legacy */
+}
+
+.mobile-frame *::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 /* Tipografia: heading usano Cabin Condensed di default */
 h1,
 h2,
