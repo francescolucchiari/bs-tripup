@@ -79,6 +79,7 @@
 /* ---- Name field ---- */
 .axp__field {
   display: flex;
+  height: 61px;
   align-items: center;
   gap: 12px;
   background: var(--bg-primary);
@@ -90,7 +91,7 @@
 .axp__field-body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0px;
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -117,6 +118,7 @@
 /* ---- You paid ---- */
 .axp__paid {
   display: flex;
+  height: 80px;
   align-items: center;
   gap: 12px;
   background: var(--bg-primary);
@@ -182,6 +184,7 @@
 /* ---- You are owed (accordion closed) ---- */
 .axp__owed {
   display: flex;
+  height: 58px;
   align-items: center;
   justify-content: space-between;
   width: 100%;
@@ -201,7 +204,7 @@
 }
 
 .axp__owed-label {
-  font: var(--body-m-bold);
+  font: var(--body-m-regular);
 }
 
 .axp__owed-value {
@@ -216,7 +219,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  font: var(--body-m-bold);
+  font: var(--body-l);
 }
 
 /* ---- Segmented ---- */

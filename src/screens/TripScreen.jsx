@@ -6,6 +6,7 @@ import TabBar from '../components/TabBar'
 import ItineraryCardPreview from '../components/ItineraryCardPreview'
 import PollFlow from '../components/PollFlow'
 import AddExpenseModal from './AddExpenseModal'
+import CreatePollModal from './CreatePollModal'
 import './TripScreen.css'
 
 /**
@@ -35,10 +36,12 @@ const PARTICIPANTS = [
   { name: 'Mara', src: '/trip/avatar-4.jpg' },
 ]
 
+// Immagini delle opzioni: in attesa degli export (vedi nomenclatura opt-*).
+// Finché mancano, il thumb mostra il placeholder grigio.
 const POLL_OPTIONS = [
-  { id: 'timeout', name: 'Time Out Market', quote: 'Classy and very tasty', image: '/trip/eat-timeout.jpg' },
-  { id: 'ramiro', name: 'Ramiro', quote: 'Great steaks!', image: '/trip/eat-retasco.jpg' },
-  { id: 'cevicheria', name: 'A Cevicheria', quote: 'Typical portuguese food', image: '/trip/eat-lumi.jpg' },
+  { id: 'timeout', name: 'Time Out Market', quote: 'Classy and very tasty', image: '/trip/opt-timeout.jpg' },
+  { id: 'ramiro', name: 'Ramiro', quote: 'Great steaks!', image: '/trip/opt-ramiro.jpg' },
+  { id: 'cevicheria', name: 'A Cevicheria', quote: 'Typical portuguese food', image: '/trip/opt-cevicheria.jpg' },
 ]
 
 const TABS = [
@@ -60,6 +63,8 @@ const EXPENSE_PARTICIPANTS = [
 export default function TripScreen({ onNext, onBack }) {
   const [seg, setSeg] = useState('itinerary')
   const [expense, setExpense] = useState(null) // { placeName } quando la modale è aperta
+  const [createOpen, setCreateOpen] = useState(false) // modale "Create new poll"
+  const [pollCreated, setPollCreated] = useState(false) // poll attivo nell'itinerario
   const scrollRef = useRef(null)
   const tueRef = useRef(null)
   const scrollMem = useRef(0) // posizione di scroll salvata dell'itinerario
@@ -233,16 +238,32 @@ export default function TripScreen({ onNext, onBack }) {
               amount="€76.00"
             />
 
-            <div className="rail" data-spine="up" data-align="top">
-              <span className="daymark__poll">
-                <Vote size={20} strokeWidth={2.25} />
-              </span>
-            </div>
-            <PollFlow
-              question="Where should we eat tonight?"
-              options={POLL_OPTIONS}
-              onAddExpense={(place) => setExpense({ placeName: place })}
-            />
+            {pollCreated ? (
+              <>
+                <div className="rail" data-spine="up" data-align="top">
+                  <span className="daymark__poll">
+                    <Vote size={20} strokeWidth={2.25} />
+                  </span>
+                </div>
+                <PollFlow
+                  question="Where should we eat tonight?"
+                  options={POLL_OPTIONS}
+                  onAddExpense={(place) => setExpense({ placeName: place })}
+                />
+              </>
+            ) : (
+              <>
+                <div className="rail" data-spine="up">
+                  <span className="daymark__dot" />
+                </div>
+                <ItineraryCardPreview
+                  empty
+                  label="Dinner"
+                  title="Not planned"
+                  onClick={() => setCreateOpen(true)}
+                />
+              </>
+            )}
         </div>
         {seg === 'expenses' && (
           <p className="trip__expenses-note">Expenses — in arrivo</p>
@@ -250,6 +271,16 @@ export default function TripScreen({ onNext, onBack }) {
       </div>
 
       <TabBar active="travels" tabs={TABS} fixed />
+
+      <CreatePollModal
+        open={createOpen}
+        options={POLL_OPTIONS}
+        onClose={() => setCreateOpen(false)}
+        onCreate={() => {
+          setCreateOpen(false)
+          setPollCreated(true) // il poll parte subito attivo nell'itinerario
+        }}
+      />
 
       <AddExpenseModal
         open={!!expense}

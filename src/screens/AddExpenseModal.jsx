@@ -35,7 +35,10 @@ const equalCents = (totalCents, n) => {
   return Array.from({ length: n }, (_, i) => base + (i < rem ? 1 : 0))
 }
 
+// id univoci anche attraverso gli HMR reload (un contatore puro si resetta
+// col modulo e può generare chiavi duplicate)
 let SPLIT_SEQ = 0
+const splitId = () => `split-${Date.now().toString(36)}-${SPLIT_SEQ++}`
 
 export default function AddExpenseModal({ open, onClose, placeName = '', participants = [] }) {
   const me = participants[0]
@@ -93,7 +96,7 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
       return [
         ...s,
         {
-          id: `split-${SPLIT_SEQ++}`,
+          id: splitId(),
           name: '',
           cost,
           members: participants.map((p) => p.id),
