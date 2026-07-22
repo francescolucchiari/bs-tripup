@@ -40,7 +40,13 @@ const equalCents = (totalCents, n) => {
 let SPLIT_SEQ = 0
 const splitId = () => `split-${Date.now().toString(36)}-${SPLIT_SEQ++}`
 
-export default function AddExpenseModal({ open, onClose, placeName = '', participants = [] }) {
+export default function AddExpenseModal({
+  open,
+  onClose,
+  onAdd,
+  placeName = '',
+  participants = [],
+}) {
   const me = participants[0]
   const others = participants.slice(1)
 
@@ -78,6 +84,10 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
   }, [splits, participants, others])
 
   const owedCents = tab === 'items' ? items.owed : amountOwedCents
+
+  // Si può aggiungere solo con un totale > 0; in "Split by items" gli importi
+  // devono quadrare col totale (né più né meno soldi divisi di quelli spesi).
+  const canAdd = paidCents > 0 && (tab !== 'items' || items.assigned === paidCents)
 
   /* ---- azioni split ---- */
   const addSplit = () =>
@@ -337,9 +347,15 @@ export default function AddExpenseModal({ open, onClose, placeName = '', partici
             )}
           </div>
 
-          {/* Footer CTA (no-op in questa iterazione) */}
+          {/* Footer CTA — disabilitata finché i conti non tornano */}
           <div className="axp__footer">
-            <Button variant="primary" size="lg" fullWidth>
+            <Button
+              variant="primary"
+              size="lg"
+              fullWidth
+              disabled={!canAdd}
+              onClick={() => onAdd?.(fmt(paidCents))}
+            >
               Add expense
             </Button>
           </div>

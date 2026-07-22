@@ -1,4 +1,4 @@
-import { useState, useRef, useLayoutEffect, useEffect } from 'react'
+import { useState, useRef, useLayoutEffect, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, Plus, Pencil, Map, Activity, Vote } from 'lucide-react'
 import SegmentedControl from '../components/SegmentedControl'
@@ -10,6 +10,7 @@ import PollFlow from '../components/PollFlow'
 import AddExpenseModal from './AddExpenseModal'
 import CreatePollModal from './CreatePollModal'
 import AddMemberModal from './AddMemberModal'
+import ExpensesView from './ExpensesView'
 import './TripScreen.css'
 
 /**
@@ -84,9 +85,38 @@ export default function TripScreen({ onNext, onBack }) {
   const [memberOpen, setMemberOpen] = useState(false) // modale "Add member"
   const [participants, setParticipants] = useState(PARTICIPANTS)
   const [joinToast, setJoinToast] = useState(false) // toast "Ren joined your trip!"
+  const [dinnerExpense, setDinnerExpense] = useState(null) // { place, amount, image }
+  const [expenseToast, setExpenseToast] = useState(null) // testo toast spesa
   const joinTimers = useRef([])
 
   useEffect(() => () => joinTimers.current.forEach(clearTimeout), [])
+
+  // avatar degli "altri" partecipanti (io = participants[0]): guidano i voti
+  // simulati del poll → totale voti = 1 (io) + others.length (4 o 5 con Ren).
+  const pollOthers = useMemo(
+    () => participants.slice(1).map((p) => p.src),
+    [participants],
+  )
+
+  // Quando il poll parte, scrolla l'itinerario così resta interamente visibile
+  // con una distanza costante (~104px, comunque ≥100) dalla tab bar.
+  useEffect(() => {
+    if (!pollCreated) return undefined
+    const s = scrollRef.current
+    if (!s) return undefined
+    const id = requestAnimationFrame(() => {
+      const poll = s.querySelector('.poll')
+      const tab = document.querySelector('.tab-bar[data-fixed]')
+      if (!poll || !tab) return
+      const GAP = 104
+      const target = tab.getBoundingClientRect().top - GAP
+      const delta = poll.getBoundingClientRect().bottom - target
+      const max = s.scrollHeight - s.clientHeight
+      const next = Math.max(0, Math.min(max, s.scrollTop + delta))
+      s.scrollTo({ top: next, behavior: 'smooth' })
+    })
+    return () => cancelAnimationFrame(id)
+  }, [pollCreated])
 
   // Continue dalla modale: chiudi; se Ren è stato invitato, dopo qualche
   // secondo entra nel gruppo (avatar + conteggio) col toast di conferma.
@@ -112,7 +142,11 @@ export default function TripScreen({ onNext, onBack }) {
   //  - ritorno da Expenses: ripristina la posizione di scroll salvata
   useLayoutEffect(() => {
     const s = scrollRef.current
-    if (!s || seg !== 'itinerary') return
+    if (!s) return
+    if (seg === 'expenses') {
+      s.scrollTop = 0 // Expenses parte sempre dall'alto
+      return
+    }
     if (initedRef.current) {
       s.scrollTop = scrollMem.current
       return
@@ -134,6 +168,18 @@ export default function TripScreen({ onNext, onBack }) {
       scrollMem.current = scrollRef.current.scrollTop
     }
     setSeg(next)
+  }
+
+  // "Add expense" confermato: la card cena mostra il prezzo (niente Call/Book),
+  // sale il toast e dopo ~2s si passa in automatico alla sezione Expenses.
+  const handleExpenseAdded = (amount) => {
+    const place = expense?.placeName ?? ''
+    const opt = POLL_OPTIONS.find((o) => o.name === place)
+    setDinnerExpense({ place, amount, image: opt?.image })
+    setExpense(null)
+    setExpenseToast(`Expense added to Dinner at ${place}`)
+    joinTimers.current.push(setTimeout(() => handleSeg('expenses'), 2000))
+    joinTimers.current.push(setTimeout(() => setExpenseToast(null), 2600))
   }
 
   return (
@@ -206,7 +252,7 @@ export default function TripScreen({ onNext, onBack }) {
       </div>
 
       {/* ---- CONTENUTO SCROLLABILE (scorre sotto il top layer) ---- */}
-      <div className="trip__scroll" ref={scrollRef}>
+      <div className="trip__scroll" ref={scrollRef} data-seg={seg}>
         {/* Itinerary sempre montato (nascosto su Expenses) così lo stato del
             poll non si resetta cambiando segmento. */}
         <div
@@ -276,20 +322,7 @@ export default function TripScreen({ onNext, onBack }) {
               amount="€76.00"
             />
 
-            {pollCreated ? (
-              <>
-                <div className="rail" data-spine="up" data-align="top">
-                  <span className="daymark__poll">
-                    <Vote size={20} strokeWidth={2.25} />
-                  </span>
-                </div>
-                <PollFlow
-                  question="Where should we eat tonight?"
-                  options={POLL_OPTIONS}
-                  onAddExpense={(place) => setExpense({ placeName: place })}
-                />
-              </>
-            ) : (
+            {!pollCreated ? (
               <>
                 <div className="rail" data-spine="up">
                   <span className="daymark__dot" />
@@ -301,26 +334,51 @@ export default function TripScreen({ onNext, onBack }) {
                   onClick={() => setCreateOpen(true)}
                 />
               </>
+            ) : dinnerExpense ? (
+              <>
+                <div className="rail" data-spine="up">
+                  <span className="daymark__dot" />
+                </div>
+                <ItineraryCardPreview
+                  image={dinnerExpense.image}
+                  label="Dinner"
+                  title={`@${dinnerExpense.place}`}
+                  amount={dinnerExpense.amount}
+                />
+              </>
+            ) : (
+              <>
+                <div className="rail" data-spine="up" data-align="top">
+                  <span className="daymark__poll">
+                    <Vote size={20} strokeWidth={2.25} />
+                  </span>
+                </div>
+                <PollFlow
+                  question="Where should we eat tonight?"
+                  options={POLL_OPTIONS}
+                  others={pollOthers}
+                  onAddExpense={(place) => setExpense({ placeName: place })}
+                />
+              </>
             )}
         </div>
-        {seg === 'expenses' && (
-          <p className="trip__expenses-note">Expenses — in arrivo</p>
-        )}
+        {seg === 'expenses' && <ExpensesView />}
       </div>
 
       <TabBar active="travels" tabs={TABS} fixed />
 
-      {/* Toast "Ren joined" — fade in/out sopra la tab bar */}
+      {/* Toast (Ren joined / Expense added) — fade in/out sopra la tab bar */}
       <AnimatePresence>
-        {joinToast && (
+        {(expenseToast || joinToast) && (
           <motion.div
             className="trip__toast"
+            key={expenseToast || 'join'}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
-            <Toast>Ren joined your trip!</Toast>
+            <Toast>{expenseToast || 'Ren joined your trip!'}</Toast>
           </motion.div>
         )}
       </AnimatePresence>
@@ -348,6 +406,7 @@ export default function TripScreen({ onNext, onBack }) {
         placeName={expense?.placeName}
         participants={EXPENSE_PARTICIPANTS}
         onClose={() => setExpense(null)}
+        onAdd={handleExpenseAdded}
       />
     </div>
   )

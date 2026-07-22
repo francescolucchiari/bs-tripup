@@ -31,13 +31,18 @@ export default function AddMemberModal({
   const [invited, setInvited] = useState(false) // Ren invitato
 
   // posizioni del cluster (dal design: container 109×75); le taglie
-  // corrispondono alle size del DS (lg 48 · xs 24 · md 40)
+  // corrispondono alle size del DS (lg 48 · xs 24 · md 40). `px` serve a
+  // calcolare l'offset del centro avatar rispetto al centro del cluster.
+  const CLUSTER = { w: 109, h: 75 }
   const BUBBLES = [
-    { size: 'lg', left: 6, top: 27 },
-    { size: 'xs', left: 57, top: 51 },
-    { size: 'xs', left: 27, top: 0 },
-    { size: 'md', left: 54, top: 8 },
+    { size: 'lg', px: 48, left: 6, top: 27 },
+    { size: 'xs', px: 24, left: 57, top: 51 },
+    { size: 'xs', px: 24, left: 27, top: 0 },
+    { size: 'md', px: 40, left: 54, top: 8 },
   ]
+  // Ren "pending" nel cluster dopo l'invito: entra col ring tratteggiato verde
+  const PENDING_POS = { size: 'md', left: 84, top: 34 }
+  const pendingUser = invited ? companions[0] : null
 
   return (
     <AnimatePresence>
@@ -81,20 +86,53 @@ export default function AddMemberModal({
                 <div className="amm__cluster">
                   {BUBBLES.map((b, i) => {
                     const p = participants[i]
+                    if (!p) return null
+                    // parte dal centro del cluster (verso l'interno) e si
+                    // sposta verso l'esterno fino alla posizione finale
+                    const offX = b.left + b.px / 2 - CLUSTER.w / 2
+                    const offY = b.top + b.px / 2 - CLUSTER.h / 2
                     return (
-                      p && (
-                        <span
-                          key={i}
-                          className="amm__bubble"
-                          style={{ left: b.left, top: b.top }}
-                        >
-                          <Avatar size={b.size} src={p.src} name={p.name} />
-                        </span>
-                      )
+                      <motion.span
+                        key={i}
+                        className="amm__bubble"
+                        style={{ left: b.left, top: b.top }}
+                        initial={{ opacity: 0, scale: 0, x: -offX, y: -offY }}
+                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 260,
+                          damping: 20,
+                          mass: 0.7,
+                          delay: 0.12 + i * 0.06,
+                        }}
+                      >
+                        <Avatar size={b.size} src={p.src} name={p.name} />
+                      </motion.span>
                     )
                   })}
+
+                  {pendingUser && (
+                    <motion.span
+                      className="amm__bubble amm__bubble--pending"
+                      style={{ left: PENDING_POS.left, top: PENDING_POS.top }}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 0.7 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 18, mass: 0.6 }}
+                    >
+                      <Avatar
+                        size={PENDING_POS.size}
+                        src={pendingUser.src}
+                        name={pendingUser.name}
+                      />
+                    </motion.span>
+                  )}
                 </div>
-                <span className="amm__count">{participants.length} participants</span>
+                <span className="amm__count">
+                  {participants.length} participants
+                  {pendingUser && (
+                    <span className="amm__count-pending"> · 1 pending</span>
+                  )}
+                </span>
               </div>
 
               {/* Search (mock) */}

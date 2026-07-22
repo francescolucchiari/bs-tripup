@@ -246,6 +246,13 @@
   padding-bottom: 240px;
 }
 
+/* In Expenses il contenuto parte sotto il segmented (niente peek dell'itinerario)
+   e chiude con lo spazio per la tab bar flottante. */
+.trip__scroll[data-seg='expenses'] {
+  padding-top: 254px;
+  padding-bottom: 120px;
+}
+
 /* nasconde la scrollbar nativa (Chrome/Safari) */
 .trip__scroll::-webkit-scrollbar {
   width: 0;

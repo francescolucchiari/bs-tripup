@@ -1,0 +1,177 @@
+/* ============================================================
+   ExpensesView — tab "Expenses" della Trip view
+   ============================================================ */
+
+.exp {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 24px;
+}
+
+/* ---- Riepilogo (dovuto/da dare + simplification) ---- */
+.exp__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+}
+
+.exp__totals {
+  display: flex;
+  align-items: stretch;
+}
+
+.exp__total {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 8px;
+}
+
+.exp__total-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--body-m);
+  color: var(--green-800);
+  letter-spacing: var(--tracking-tight);
+}
+
+.exp__total-label--owe {
+  color: var(--text-danger);
+}
+
+.exp__total-value {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--green-800);
+}
+
+.exp__total-value--owe {
+  color: var(--text-danger);
+}
+
+.exp__total-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border-default);
+}
+
+.exp__simplify {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.exp__simplify-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font: var(--body-l);
+  color: var(--text-accent);
+}
+
+.exp__simplify-label svg {
+  flex: 0 0 auto;
+  color: var(--icon-primary);
+}
+
+/* ---- Sezioni ---- */
+.exp__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exp__section + .exp__section {
+  margin-top: 8px; /* 16 (gap exp) + 8 = 24 tra le sezioni */
+}
+
+.exp__section-title {
+  font: var(--body-l);
+  color: var(--text-accent);
+}
+
+.exp__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exp__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  box-shadow: 0 2px 6px var(--shadow-default);
+}
+
+.exp__person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.exp__person-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.exp__person-name {
+  font: var(--body-l);
+  color: var(--green-800);
+}
+
+.exp__person-sub {
+  font: var(--caption);
+  color: var(--text-tertiary);
+}
+
+.exp__person .btn {
+  min-width: 0; /* Pay in hug */
+}
+
+/* ---- Azioni "X owes you" ---- */
+.exp__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.exp__settle,
+.exp__remind {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  font: var(--body-l);
+  color: var(--green-800);
+  letter-spacing: var(--tracking-tight);
+  cursor: pointer;
+}
+
+.exp__settle {
+  background: var(--bg-accent); /* green-200 */
+}
+
+.exp__remind {
+  background: none;
+  text-decoration: underline;
+}

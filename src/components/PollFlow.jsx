@@ -9,7 +9,8 @@ import ItineraryUpdateCard from './ItineraryUpdateCard'
  *
  * Script (demo):
  *  1. l'utente vota (avatar `me`) → parte la sequenza
- *  2. arrivano 3 voti simulati (gli altri 3 partecipanti) → totale 4
+ *  2. arriva un voto per ciascun `other` partecipante → totale = 1 + others.length
+ *     (4 con gruppo a 4, 5 con Ren aggiunto — il voto extra va sulla mia opzione)
  *  3. all-voted → countdown 5s
  *  4. a 0 → closed-celebration (coriandoli)
  *  5. ~1.5s dopo → itinerary-update (vince sempre l'opzione votata dall'utente)
@@ -17,20 +18,22 @@ import ItineraryUpdateCard from './ItineraryUpdateCard'
  * Props:
  *  - question
  *  - options: [{ id, name, quote, image }]
+ *  - others:  [srcAvatar] degli altri partecipanti (default: gruppo a 4)
  */
 
 const ME = '/trip/avatar-1.jpg' // utente corrente
 
-// Voti simulati in arrivo dopo il mio: sono gli altri 3 partecipanti del
-// viaggio (avatar 2-4), con relativo ritardo(ms). Le OPZIONI target non sono
-// fisse: vengono calcolate in base alla scelta dell'utente (vedi handleVote),
-// così la sua opzione vince sempre senza pareggi.
-const INCOMING_AVATARS = [
+// Avatar di default degli "altri" partecipanti (fallback: gruppo a 4 = 3
+// altri). Se il gruppo è a 5 (Ren aggiunto), TripScreen passa 4 `others` →
+// i voti totali diventano 5. Le opzioni target si calcolano sulla scelta
+// dell'utente (vedi handleVote), così la sua vince sempre senza pareggi.
+const DEFAULT_OTHERS = [
   '/trip/avatar-2.jpg',
   '/trip/avatar-3.jpg',
   '/trip/avatar-4.jpg',
 ]
-const INCOMING_TIMES = [1500, 3000, 4600]
+// ritardi (ms) dei voti in arrivo, uno per ciascun "altro" partecipante
+const incomingTimes = (n) => Array.from({ length: n }, (_, i) => 1500 + i * 1400)
 
 const fmtBig = (s) => {
   const m = Math.floor(s / 60)
@@ -46,7 +49,7 @@ const addVote = (poll, optId, avatar, mine) => ({
   ),
 })
 
-export default function PollFlow({ question, options, onAddExpense }) {
+export default function PollFlow({ question, options, others = DEFAULT_OTHERS, onAddExpense }) {
   const [poll, setPoll] = useState(() => ({
     question,
     status: 'open',
@@ -97,13 +100,15 @@ export default function PollFlow({ question, options, onAddExpense }) {
       // I voti ai rivali arrivano prima (pareggio iniziale 1–1–1), i miei in
       // coda (stacco finale) → "sorpasso morbido".
       const rivals = options.map((o) => o.id).filter((id) => id !== optId)
-      const targets = [...rivals]
-      while (targets.length < INCOMING_TIMES.length) targets.push(optId)
+      // un voto per ogni "altro" partecipante: 1 a ciascun rivale, i restanti
+      // (incluso Ren se il gruppo è a 5) sulla MIA opzione → vince sempre.
+      const targets = others.map((_, i) => rivals[i] ?? optId)
+      const times = incomingTimes(others.length)
 
       targets.forEach((target, i) => {
         const t = setTimeout(
-          () => setPoll((p) => addVote(p, target, INCOMING_AVATARS[i], false)),
-          INCOMING_TIMES[i],
+          () => setPoll((p) => addVote(p, target, others[i], false)),
+          times[i],
         )
         timers.current.push(t)
       })
@@ -112,10 +117,10 @@ export default function PollFlow({ question, options, onAddExpense }) {
       const tv = setTimeout(() => {
         setPoll((p) => ({ ...p, allVoted: true }))
         setClosing(5)
-      }, INCOMING_TIMES[INCOMING_TIMES.length - 1] + 400)
+      }, times[times.length - 1] + 400)
       timers.current.push(tv)
     },
-    [options],
+    [options, others],
   )
 
   const closesLabel = poll.allVoted ? `${closing ?? 0}s` : fmtBig(big)

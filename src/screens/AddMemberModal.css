@@ -20,7 +20,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 80%; /* ~679px sul frame 852 */
+  height: 87%; /* tutto il contenuto sopra la CTA (l'overflow era ~40px) */
   display: flex;
   flex-direction: column;
   background: var(--bg-page);
@@ -88,10 +88,29 @@
   display: inline-flex;
 }
 
+/* Ren "pending": anello tratteggiato verde chiaro attorno all'avatar
+   (con un piccolo gap), senza alterare la posizione dell'avatar */
+.amm__bubble--pending {
+  z-index: 5;
+}
+
+.amm__bubble--pending::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 2px dashed var(--border-accent);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
 .amm__count {
   font: var(--body-m);
   color: var(--text-accent);
   text-align: center;
+}
+
+.amm__count-pending {
+  color: var(--text-tertiary);
 }
 
 /* ---- Search (mock) ---- */
