@@ -7,31 +7,31 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  padding-top: var(--statusbar-h); /* la top bar resta sotto la status bar */
   background: var(--bg-page);
 }
 
-/* ---- Top bar (wordmark + New trip) ---- */
+/* ---- Top bar (logo + New trip) ----
+   Full-bleed: il bianco sale fino al top del frame, così la status bar
+   poggia sulla barra invece che sul fondo pagina. Il padding-top tiene
+   logo e CTA sotto l'orario (box-sizing: border-box → contenuto 64px). */
 .home__bar {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  height: 64px;
-  padding: 0 24px;
+  height: calc(64px + var(--statusbar-h));
+  padding: var(--statusbar-h) 24px 0;
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-default);
 }
 
-/* segnaposto del logo: da sostituire con l'asset quando disponibile */
+/* Logo: altezza fissa 42px, larghezza dal rapporto nativo dell'SVG (135×42).
+   flex-shrink a 0 così la barra non lo comprime accanto alla CTA. */
 .home__logo {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 34px;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  color: var(--black);
+  flex: 0 0 auto;
+  height: 42px;
+  width: auto;
 }
 
 .home__bar .btn {
@@ -113,28 +113,29 @@
   cursor: pointer;
 }
 
+/* Niente overflow:hidden qui: il cluster di avatar deve poter uscire dal
+   riquadro della foto. Il raggio sta sull'immagine, che è l'unica cosa
+   da ritagliare. */
 .home__cover {
   position: relative;
   display: block;
   height: 140px;
   border-radius: 8px;
   background: var(--surface-placeholder);
-  overflow: hidden;
 }
 
 .home__cover img {
   width: 100%;
   height: 100%;
+  border-radius: 8px;
   object-fit: cover;
 }
 
-/* cluster avatar sovrapposto in basso a destra della cover */
+/* Cluster avatar: gli offset sono presi dal bordo destro/inferiore della
+   cover, così i due in basso possono sconfinare fuori dalla foto. */
 .home__cover-avatars {
   position: absolute;
-  right: 12px;
-  bottom: 6px;
-  width: 85px;
-  height: 87px;
+  inset: 0;
 }
 
 .home__cover-avatar {

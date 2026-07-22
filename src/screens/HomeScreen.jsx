@@ -10,7 +10,6 @@ import './HomeScreen.css'
  * striscia di stato sfalsata, griglia dei viaggi passati e TabBar.
  *
  * Solo la card del viaggio attivo naviga (→ Trip view): il resto è mock.
- * Il logo è un wordmark testuale segnaposto, da sostituire con l'asset.
  */
 
 const ASSETS = {
@@ -20,12 +19,15 @@ const ASSETS = {
   amsterdam: '/trip/past-amsterdam.jpg',
 }
 
-// cluster di avatar sovrapposto alla cover (posizioni dal design, box 85×87)
+// Cluster di avatar "appoggiato" sull'angolo in basso a destra della foto:
+// non è contenuto nel riquadro, ci galleggia sopra e ne esce sul fondo
+// (Mara e Tom hanno bottom negativo → sconfinano sulla card bianca).
+// Offset dal bordo destro/inferiore della cover. Ordine = ordine di stacking.
 const COVER_AVATARS = [
-  { size: 'md', px: 40, left: 45, top: 0, src: '/trip/avatar-2.jpg', name: 'Tom' },
-  { size: 'sm', px: 28, left: 57, top: 53, src: '/trip/avatar-3.jpg', name: 'Nic' },
-  { size: 'sm', px: 32, left: 0, top: 16, src: '/trip/avatar-4.jpg', name: 'Mara' },
-  { size: 'md', px: 40, left: 8, top: 58, src: '/trip/avatar-1.jpg', name: 'Ari' },
+  { size: 'md', right: 61, bottom: 15, src: '/trip/avatar-3.jpg', name: 'Nic' },
+  { size: 'sm', right: 10, bottom: -15, src: '/trip/avatar-2.jpg', name: 'Tom' },
+  { size: 'md', right: 9, bottom: 26, src: '/trip/avatar-1.jpg', name: 'Ari' },
+  { size: 'md', right: 47, bottom: -32, src: '/trip/avatar-4.jpg', name: 'Mara' },
 ]
 
 const PAST_TRIPS = [
@@ -56,14 +58,14 @@ export default function HomeScreen({ onNext }) {
     <div className="home">
       {/* Top bar: wordmark (placeholder) + New trip */}
       <header className="home__bar">
-        <span className="home__logo">TRIPUP</span>
+        <img className="home__logo" src="/logo.svg" alt="TripUp" />
         <Button variant="primary" size="md">
           New trip
         </Button>
       </header>
 
       <div className="home__scroll">
-        <h1 className="home__welcome">Welcome back Ari</h1>
+        <h1 className="home__welcome">Welcome back, Ari</h1>
 
         {/* ---- Active trip ---- */}
         <section className="home__section">
@@ -78,7 +80,7 @@ export default function HomeScreen({ onNext }) {
                     <span
                       key={i}
                       className="home__cover-avatar"
-                      style={{ left: a.left, top: a.top }}
+                      style={{ right: a.right, bottom: a.bottom, zIndex: i + 1 }}
                     >
                       <Avatar size={a.size} src={a.src} name={a.name} ring />
                     </span>
