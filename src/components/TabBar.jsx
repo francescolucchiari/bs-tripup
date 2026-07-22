@@ -5,7 +5,7 @@ import './TabBar.css'
 const DEFAULT_TABS = [
   { key: 'travels', label: 'Travels', icon: Map },
   { key: 'activity', label: 'Activity', icon: Activity },
-  { key: 'profile', label: 'Profile', avatar: { name: 'Ana' } },
+  { key: 'profile', label: 'Profile', avatar: { name: 'Ari' } },
 ]
 
 /**

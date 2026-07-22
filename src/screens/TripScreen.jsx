@@ -32,10 +32,10 @@ const ASSETS = {
   blob: '/trip/header-blob.svg',
 }
 
-// L'utente corrente ("me") è l'avatar 1 (Ana). Stato iniziale: 4 partecipanti.
+// L'utente corrente ("me") è l'avatar 1 (Ari). Stato iniziale: 4 partecipanti.
 // Il 5° (Ren, avatar-5) verrà aggiunto tramite il futuro flusso "aggiungi partecipante".
 const PARTICIPANTS = [
-  { name: 'Ana', src: '/trip/avatar-1.jpg' }, // me
+  { name: 'Ari', src: '/trip/avatar-1.jpg' }, // me
   { name: 'Tom', src: '/trip/avatar-2.jpg' },
   { name: 'Nic', src: '/trip/avatar-3.jpg' },
   { name: 'Mara', src: '/trip/avatar-4.jpg' },
@@ -65,7 +65,7 @@ const POLL_OPTIONS = [
 const TABS = [
   { key: 'travels', label: 'Travels', icon: Map },
   { key: 'activity', label: 'Activity', icon: Activity },
-  { key: 'profile', label: 'Profile', avatar: { name: 'Ana', src: '/trip/avatar-1.jpg' } },
+  { key: 'profile', label: 'Profile', avatar: { name: 'Ari', src: '/trip/avatar-1.jpg' } },
 ]
 
 // Partecipanti della spesa (modale Add expense): il primo è "You" (chi paga).
