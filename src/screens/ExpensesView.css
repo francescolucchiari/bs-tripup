@@ -175,3 +175,31 @@
   background: none;
   text-decoration: underline;
 }
+
+/* ---- Empty state "Everyone's squared up!" ---- */
+.exp__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 24px;
+  gap: 4px;
+}
+
+.exp__empty-illus {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: var(--surface-placeholder);
+  margin-bottom: 16px;
+}
+
+.exp__empty-title {
+  font: var(--heading-l);
+  color: var(--text-primary);
+}
+
+.exp__empty-sub {
+  font: var(--body-m);
+  color: var(--text-tertiary);
+}

@@ -1,0 +1,209 @@
+/* ============================================================
+   PayModal — bottom-sheet "Send payment" → "Payment success"
+   Un solo sheet, altezza animata tra le due fasi.
+   ============================================================ */
+
+.pay {
+  position: absolute;
+  inset: 0;
+  z-index: 110;
+}
+
+.pay__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.pay__sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* contenuto ancorato in basso durante lo shrink */
+  background: var(--bg-page);
+  border-radius: 32px 32px 0 0;
+  overflow: hidden;
+}
+
+.pay__body {
+  padding: 24px;
+}
+
+/* ---- Fase SEND ---- */
+.pay__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.pay__titles {
+  text-align: center;
+}
+
+.pay__title {
+  font: var(--heading-m);
+  color: var(--text-primary);
+}
+
+.pay__subtitle {
+  font: var(--caption);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.pay__close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: none;
+  border-radius: 999px;
+  background: var(--gray-300);
+  color: var(--icon-primary);
+  cursor: pointer;
+}
+
+.pay__transfer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.pay__party {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pay__party-name {
+  font: var(--body-l);
+  color: var(--text-primary);
+}
+
+.pay__arrow {
+  color: var(--icon-primary);
+  margin-bottom: 26px; /* allinea la freccia al centro degli avatar */
+}
+
+.pay__amount {
+  margin-top: 16px;
+  text-align: center;
+  font: var(--heading-l);
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
+}
+
+.pay__methods {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pay__methods-title {
+  font: var(--body-l);
+  color: var(--text-primary);
+}
+
+.pay__method {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.pay__method[data-on] {
+  border-color: var(--border-accent);
+}
+
+.pay__method-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 28px;
+  border-radius: 8px;
+}
+
+.pay__method-icon--bank {
+  background: var(--bg-accent-strong);
+  color: var(--green-900);
+}
+
+.pay__method-icon--apple {
+  background: var(--black);
+  color: var(--white);
+}
+
+.pay__method-glyph {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.pay__method-label {
+  font: var(--body-l);
+  color: var(--text-primary);
+}
+
+/* ---- CTA (in entrambe le fasi) ---- */
+.pay__cta {
+  margin-top: 28px;
+}
+
+/* ---- Fase SUCCESS ---- */
+.pay__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 0 0;
+}
+
+.pay__success-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--bg-accent-strong);
+  color: var(--green-900);
+}
+
+.pay__success-title {
+  margin-top: 20px;
+  font: var(--heading-m);
+  color: var(--text-primary);
+}
+
+.pay__success-note {
+  margin-top: 16px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--bg-accent-subtle);
+  color: var(--green-800);
+  font: var(--body-m-bold);
+}
+
+.pay__success .pay__cta {
+  width: 100%;
+}

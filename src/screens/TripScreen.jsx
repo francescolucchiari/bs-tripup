@@ -11,6 +11,7 @@ import AddExpenseModal from './AddExpenseModal'
 import CreatePollModal from './CreatePollModal'
 import AddMemberModal from './AddMemberModal'
 import ExpensesView from './ExpensesView'
+import PayModal from './PayModal'
 import './TripScreen.css'
 
 /**
@@ -87,6 +88,8 @@ export default function TripScreen({ onNext, onBack }) {
   const [joinToast, setJoinToast] = useState(false) // toast "Ren joined your trip!"
   const [dinnerExpense, setDinnerExpense] = useState(null) // { place, amount, image }
   const [expenseToast, setExpenseToast] = useState(null) // testo toast spesa
+  const [payTarget, setPayTarget] = useState(null) // { name, src, amount } → modale Pay
+  const [settled, setSettled] = useState(false) // pagamento fatto → recap si azzera
   const joinTimers = useRef([])
 
   useEffect(() => () => joinTimers.current.forEach(clearTimeout), [])
@@ -362,7 +365,9 @@ export default function TripScreen({ onNext, onBack }) {
               </>
             )}
         </div>
-        {seg === 'expenses' && <ExpensesView />}
+        {seg === 'expenses' && (
+          <ExpensesView onPay={(t) => setPayTarget(t)} settled={settled} />
+        )}
       </div>
 
       <TabBar active="travels" tabs={TABS} fixed />
@@ -407,6 +412,17 @@ export default function TripScreen({ onNext, onBack }) {
         participants={EXPENSE_PARTICIPANTS}
         onClose={() => setExpense(null)}
         onAdd={handleExpenseAdded}
+      />
+
+      <PayModal
+        open={!!payTarget}
+        me={EXPENSE_PARTICIPANTS[0]}
+        target={payTarget}
+        onClose={() => setPayTarget(null)}
+        onDone={() => {
+          setPayTarget(null)
+          setSettled(true)
+        }}
       />
     </div>
   )
