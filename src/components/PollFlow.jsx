@@ -49,7 +49,7 @@ const addVote = (poll, optId, avatar, mine) => ({
   ),
 })
 
-export default function PollFlow({ question, options, others = DEFAULT_OTHERS, onAddExpense }) {
+export default function PollFlow({ question, options, others = DEFAULT_OTHERS, onAddExpense, onResolved }) {
   const [poll, setPoll] = useState(() => ({
     question,
     status: 'open',
@@ -80,7 +80,10 @@ export default function PollFlow({ question, options, others = DEFAULT_OTHERS, o
     if (closing <= 0) {
       // la mia opzione vince sempre (i voti simulati sono tarati apposta)
       setPoll((p) => ({ ...p, status: 'closed', winnerId: p.myVoteId }))
-      const t = setTimeout(() => setPhase('resolved'), 1500)
+      const t = setTimeout(() => {
+        setPhase('resolved')
+        onResolved?.() // il marker sul rail smette di girare e torna un dot
+      }, 1500)
       timers.current.push(t)
       return undefined
     }

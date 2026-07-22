@@ -17,6 +17,10 @@ import './AddExpenseModal.css'
  *  - onClose:   () => void  (back chevron)
  *  - placeName: nome del posto vincitore del poll (per il prefill del Name)
  *  - participants: [{ id, name, src }] — il primo è "You" (chi paga)
+ *  - editing:   true quando si riapre una spesa già salvata (titolo e CTA
+ *               cambiano). Il componente non viene mai smontato, quindi lo
+ *               stato — importo, tab e split by items — resta in memoria e la
+ *               riapertura mostra la spesa esattamente com'era.
  */
 
 /* ---- money helpers (centesimi-accurati: le quote sommano sempre al totale) ---- */
@@ -46,6 +50,7 @@ export default function AddExpenseModal({
   onAdd,
   placeName = '',
   participants = [],
+  editing = false,
 }) {
   const me = participants[0]
   const others = participants.slice(1)
@@ -146,7 +151,7 @@ export default function AddExpenseModal({
               <ChevronLeft size={24} strokeWidth={2} />
             </button>
             <div className="axp__titles">
-              <h1 className="axp__title">Add expense</h1>
+              <h1 className="axp__title">{editing ? 'Edit expense' : 'Add expense'}</h1>
               <p className="axp__subtitle">
                 to <strong>Lisbon Gateway</strong>
               </p>
@@ -356,7 +361,7 @@ export default function AddExpenseModal({
               disabled={!canAdd}
               onClick={() => onAdd?.(fmt(paidCents))}
             >
-              Add expense
+              {editing ? 'Save changes' : 'Add expense'}
             </Button>
           </div>
         </motion.div>

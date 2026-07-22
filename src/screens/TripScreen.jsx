@@ -1,6 +1,6 @@
 import { useState, useRef, useLayoutEffect, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, Plus, Pencil, Map, Activity, Vote } from 'lucide-react'
+import { ChevronLeft, Plus, Pencil, Map, Activity, Loader } from 'lucide-react'
 import SegmentedControl from '../components/SegmentedControl'
 import AvatarStack from '../components/AvatarStack'
 import TabBar from '../components/TabBar'
@@ -83,6 +83,7 @@ export default function TripScreen({ onNext, onBack }) {
   const [expense, setExpense] = useState(null) // { placeName } quando la modale è aperta
   const [createOpen, setCreateOpen] = useState(false) // modale "Create new poll"
   const [pollCreated, setPollCreated] = useState(false) // poll attivo nell'itinerario
+  const [pollResolved, setPollResolved] = useState(false) // poll concluso → marker torna un dot
   const [memberOpen, setMemberOpen] = useState(false) // modale "Add member"
   const [participants, setParticipants] = useState(PARTICIPANTS)
   const [joinToast, setJoinToast] = useState(false) // toast "Ren joined your trip!"
@@ -175,13 +176,20 @@ export default function TripScreen({ onNext, onBack }) {
 
   // "Add expense" confermato: la card cena mostra il prezzo (niente Call/Book),
   // sale il toast e dopo ~2s si passa in automatico alla sezione Expenses.
+  // In modifica invece si aggiorna e basta: niente salto a Expenses, che a
+  // spesa già registrata sarebbe un cambio di contesto non richiesto.
   const handleExpenseAdded = (amount) => {
     const place = expense?.placeName ?? ''
+    const editing = !!expense?.editing
     const opt = POLL_OPTIONS.find((o) => o.name === place)
     setDinnerExpense({ place, amount, image: opt?.image })
     setExpense(null)
-    setExpenseToast(`Expense added to Dinner at ${place}`)
-    joinTimers.current.push(setTimeout(() => handleSeg('expenses'), 2000))
+    setExpenseToast(
+      editing ? `Dinner at ${place} updated` : `Expense added to Dinner at ${place}`,
+    )
+    if (!editing) {
+      joinTimers.current.push(setTimeout(() => handleSeg('expenses'), 2000))
+    }
     joinTimers.current.push(setTimeout(() => setExpenseToast(null), 2600))
   }
 
@@ -347,19 +355,51 @@ export default function TripScreen({ onNext, onBack }) {
                   label="Dinner"
                   title={`@${dinnerExpense.place}`}
                   amount={dinnerExpense.amount}
+                  onClick={() =>
+                    setExpense({ placeName: dinnerExpense.place, editing: true })
+                  }
                 />
               </>
             ) : (
               <>
                 <div className="rail" data-spine="up" data-align="top">
-                  <span className="daymark__poll">
-                    <Vote size={20} strokeWidth={2.25} />
-                  </span>
+                  {/* mentre il poll è in corso il marker è uno spinner lento; a poll
+                      concluso torna il dot verde delle attività. Stesso box 24px in
+                      entrambi gli stati, così il centro sul rail non salta. */}
+                  <AnimatePresence mode="popLayout">
+                    {pollResolved ? (
+                      <motion.span
+                        key="dot"
+                        className="daymark__poll"
+                        initial={{ scale: 0.4, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+                      >
+                        <span className="daymark__dot" />
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="spinner"
+                        className="daymark__poll"
+                        initial={{ scale: 0.4, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.4, opacity: 0, transition: { duration: 0.22 } }}
+                        transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+                      >
+                        {/* rotazione e "respiro" sono due animazioni CSS su due
+                            elementi distinti: un solo transform ciascuno. */}
+                        <span className="daymark__spinner">
+                          <Loader size={16} strokeWidth={1.5} />
+                        </span>
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </div>
                 <PollFlow
                   question="Where should we eat tonight?"
                   options={POLL_OPTIONS}
                   others={pollOthers}
+                  onResolved={() => setPollResolved(true)}
                   onAddExpense={(place) => setExpense({ placeName: place })}
                 />
               </>
@@ -402,6 +442,7 @@ export default function TripScreen({ onNext, onBack }) {
         onClose={() => setCreateOpen(false)}
         onCreate={() => {
           setCreateOpen(false)
+          setPollResolved(false)
           setPollCreated(true) // il poll parte subito attivo nell'itinerario
         }}
       />
@@ -409,6 +450,7 @@ export default function TripScreen({ onNext, onBack }) {
       <AddExpenseModal
         open={!!expense}
         placeName={expense?.placeName}
+        editing={!!expense?.editing}
         participants={EXPENSE_PARTICIPANTS}
         onClose={() => setExpense(null)}
         onAdd={handleExpenseAdded}

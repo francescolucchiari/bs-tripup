@@ -41,11 +41,6 @@ export default function MobileFrame({
       <div className="mobile-frame__content" style={{ background: bg }}>
         {children}
       </div>
-
-      {/* Home indicator iOS finto */}
-      <div className="mobile-frame__home-indicator" aria-hidden="true">
-        <span />
-      </div>
     </div>
   )
 }

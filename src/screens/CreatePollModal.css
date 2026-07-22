@@ -20,7 +20,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: calc(91% + 30px); /* ~805px sul frame 852: l'ultima riga resta sopra la CTA */
+  /* si ferma 96px sotto il top del frame (sotto la status bar) */
+  height: calc(100% - 96px);
   display: flex;
   flex-direction: column;
   background: var(--bg-page);

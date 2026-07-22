@@ -11,7 +11,7 @@
   /* altezza del layer fisso in alto: quanto la lista è "spinta" giù.
      Tarato così la Not planned dista ~140px dalla tab bar; il gruppo del
      martedì sfuma sotto la fascia blur, mercoledì resta in evidenza. */
-  --top-h: 190px;
+  --top-h: calc(190px + var(--statusbar-h));
 }
 
 /* ---- TOP LAYER FISSO ---- */
@@ -25,8 +25,10 @@
 
 .trip__header {
   position: relative;
-  min-height: 176px;
-  padding: 8px 24px 16px;
+  min-height: calc(176px + var(--statusbar-h));
+  /* padding-top include la status bar: il verde arriva fino al top del frame
+     mentre titolo/back restano sotto l'orario. */
+  padding: calc(8px + var(--statusbar-h)) 24px 16px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -36,7 +38,7 @@
 
 .trip__blob {
   position: absolute;
-  top: 4px;
+  top: calc(4px + var(--statusbar-h));
   right: -28px;
   z-index: 0;
   width: 208px;
@@ -47,7 +49,7 @@
 
 .trip__back {
   position: absolute;
-  top: 8px;
+  top: calc(8px + var(--statusbar-h));
   left: 12px;
   z-index: 3;
   display: inline-flex;
@@ -63,7 +65,7 @@
 
 .trip__cover {
   position: absolute;
-  top: 40px;
+  top: calc(40px + var(--statusbar-h));
   right: 20px;
   width: 101px;
   height: 119px;
@@ -249,7 +251,7 @@
 /* In Expenses il contenuto parte sotto il segmented (niente peek dell'itinerario)
    e chiude con lo spazio per la tab bar flottante. */
 .trip__scroll[data-seg='expenses'] {
-  padding-top: 254px;
+  padding-top: calc(254px + var(--statusbar-h));
   padding-bottom: 120px;
 }
 
@@ -396,4 +398,39 @@
   height: 24px;
   color: var(--icon-accent);
   background: var(--bg-page);
+}
+
+/* Marker del poll in corso: rotazione lenta + "respiro" appena percettibile.
+   Due animazioni su due elementi annidati, così ognuno ha il suo transform
+   e non collidono (né con quello inline di framer sul wrapper). */
+.daymark__spinner {
+  display: inline-flex;
+  animation: daymark-breathe 2.6s ease-in-out infinite;
+}
+
+.daymark__spinner svg {
+  animation: daymark-spin 3.6s linear infinite;
+}
+
+@keyframes daymark-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes daymark-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .daymark__spinner,
+  .daymark__spinner svg {
+    animation: none;
+  }
 }

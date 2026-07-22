@@ -4,6 +4,7 @@
 
 .pg-shell {
   min-height: 100%;
+  padding-top: var(--statusbar-h); /* sotto la status bar overlay */
   background: var(--bg-page);
 }
 

@@ -70,20 +70,14 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.poll__options:not([data-dense]) {
+  /* Spaziature fisse: la card non deve cambiare altezza quando arrivano i
+     voti. Si tiene la versione larga, che è quella che regge gli avatar. */
   gap: 20px;
 }
 
 .poll-option {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.poll__options:not([data-dense]) .poll-option {
   gap: 8px;
 }
 

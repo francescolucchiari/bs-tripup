@@ -41,7 +41,6 @@ export default function PollCard({ poll, onVote }) {
   const { question, status, closesLabel, allVoted, myVoteId, winnerId, options } = poll
   const isClosed = status === 'closed'
   const maxVotes = options.reduce((m, o) => Math.max(m, o.voters.length), 0)
-  const totalVotes = options.reduce((s, o) => s + o.voters.length, 0)
   const winner = options.find((o) => o.id === winnerId)
 
   return (
@@ -92,7 +91,7 @@ export default function PollCard({ poll, onVote }) {
         <h3 className="poll__title">{question}</h3>
       </div>
 
-      <ul className="poll__options" data-dense={totalVotes > 0 || undefined}>
+      <ul className="poll__options">
         {options.map((opt) => {
           const count = opt.voters.length
           const pct = maxVotes > 0 ? (count / maxVotes) * 100 : 0

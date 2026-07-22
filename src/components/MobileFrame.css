@@ -6,7 +6,6 @@
   --frame-w: 393px;
   --frame-h: 852px;
   --statusbar-h: 54px;
-  --home-indicator-h: 34px;
 
   position: relative;
   width: var(--frame-w);
@@ -25,17 +24,22 @@
 }
 
 /* ---- Status bar ---- */
+/* Overlay trasparente sopra il contenuto: le schermate occupano tutta
+   l'altezza del frame e possono passare sotto la status bar (header
+   full-bleed). Chi non lo vuole si spaziatura con --statusbar-h. */
 .mobile-frame__statusbar {
-  position: relative;
-  z-index: 2;
-  flex: 0 0 var(--statusbar-h);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200; /* sopra ogni modale (100-110): è chrome del device */
   height: var(--statusbar-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
-  padding-top: 12px;
+  padding: 12px 28px 0;
   color: var(--black);
+  pointer-events: none; /* non intercetta i tap sul contenuto sotto */
 }
 
 .mobile-frame[data-statusbar='light'] .mobile-frame__statusbar {
@@ -82,30 +86,4 @@
 /* Scrollbar discreta */
 .mobile-frame__content::-webkit-scrollbar {
   width: 0;
-}
-
-/* ---- Home indicator ---- */
-.mobile-frame__home-indicator {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  height: var(--home-indicator-h);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.mobile-frame__home-indicator span {
-  width: 140px;
-  height: 5px;
-  border-radius: 3px;
-  background: var(--black);
-  opacity: 0.85;
-}
-
-.mobile-frame[data-statusbar='light'] .mobile-frame__home-indicator span {
-  background: var(--white);
 }
