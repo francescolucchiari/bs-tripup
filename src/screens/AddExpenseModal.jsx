@@ -59,6 +59,7 @@ export default function AddExpenseModal({
   const [paid, setPaid] = useState('') // stringa, vuoto = da riempire
   const [tab, setTab] = useState('amount')
   const [splits, setSplits] = useState([])
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
   // prefill dinamico del Name in base al posto vincitore
   const displayName = name || (placeName ? `Dinner at ${placeName}` : '')
@@ -85,10 +86,16 @@ export default function AddExpenseModal({
       })
     }
     const owed = others.reduce((sum, p) => sum + perPerson[p.id], 0)
-    return { assigned, owed }
+    return { assigned, owed, perPerson }
   }, [splits, participants, others])
 
   const owedCents = tab === 'items' ? items.owed : amountOwedCents
+
+  // Il pannello "Details" compare solo su "Split by items": su "Amount" la
+  // card "Total division" mostra già la stessa ripartizione, e su "Percent"
+  // non c'è ancora un calcolo reale da esporre.
+  const canDetails = tab === 'items'
+  const OwedTag = canDetails ? 'button' : 'div'
 
   // Si può aggiungere solo con un totale > 0; in "Split by items" gli importi
   // devono quadrare col totale (né più né meno soldi divisi di quelli spesi).
@@ -194,16 +201,56 @@ export default function AddExpenseModal({
             </div>
 
             {/* You are owed — accordion (solo chiuso in questa iterazione) */}
-            <button className="axp__owed" type="button">
-              <span className="axp__owed-main">
-                <span className="axp__owed-label">You are owed</span>
-                <span className="axp__owed-value">{fmt(Math.max(0, owedCents))}</span>
-              </span>
-              <span className="axp__owed-details">
-                Details
-                <ChevronDown size={20} strokeWidth={2.25} />
-              </span>
-            </button>
+            <div className="axp__owed-wrap" data-open={(canDetails && detailsOpen) || undefined}>
+              <OwedTag
+                className="axp__owed"
+                type={canDetails ? 'button' : undefined}
+                onClick={canDetails ? () => setDetailsOpen((o) => !o) : undefined}
+                aria-expanded={canDetails ? detailsOpen : undefined}
+              >
+                <span className="axp__owed-main">
+                  <span className="axp__owed-label">You are owed</span>
+                  <span className="axp__owed-value">{fmt(Math.max(0, owedCents))}</span>
+                </span>
+                {canDetails && (
+                  <span className="axp__owed-details">
+                    Details
+                    <ChevronDown size={20} strokeWidth={2.25} />
+                  </span>
+                )}
+              </OwedTag>
+
+              {/* Quanto deve ciascuno: somma delle sue quote su tutti gli split.
+                  L'altezza va da 0 ad auto, così il contenuto sotto viene spinto
+                  giù invece di essere coperto. */}
+              <AnimatePresence initial={false}>
+                {canDetails && detailsOpen && (
+                  <motion.div
+                    key="details"
+                    className="axp__details"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{
+                      height: { duration: 0.32, ease: [0.4, 0, 0.2, 1] },
+                      opacity: { duration: 0.18 },
+                    }}
+                  >
+                    <ul className="axp__details-list">
+                      {others.map((p) => (
+                        <li className="axp__details-row" key={p.id}>
+                          <Avatar size="sm" src={p.src} name={p.name} />
+                          <span className="axp__details-name">{p.name}</span>
+                          <span className="axp__details-amount">
+                            {fmt(items.perPerson[p.id] ?? 0)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Segmented */}
             <div className="axp__segmented">

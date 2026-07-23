@@ -227,6 +227,67 @@
   font: var(--body-l);
 }
 
+/* Banner + pannello formano un blocco unico: da aperto la banner perde il
+   raggio in basso e il dettaglio ci si attacca sotto. */
+.axp__owed-wrap[data-open] .axp__owed {
+  border-radius: 16px 16px 0 0;
+}
+
+.axp__owed-details svg {
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.axp__owed-wrap[data-open] .axp__owed-details svg {
+  transform: rotate(180deg);
+}
+
+.axp__details {
+  overflow: hidden; /* necessario per l'animazione da height:0 */
+  background: var(--bg-accent);
+  border-radius: 0 0 16px 16px;
+}
+
+/* il padding sta sulla lista, non sul contenitore animato: altrimenti a
+   height:0 resterebbe visibile una fascia alta quanto il padding */
+.axp__details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--border-subtle);
+  list-style: none;
+}
+
+.axp__details-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.axp__details-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: var(--body-m-regular);
+  color: var(--text-accent);
+}
+
+.axp__details-amount {
+  flex: 0 0 auto;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .axp__owed-details svg {
+    transition: none;
+  }
+}
+
 /* ---- Segmented ---- */
 .axp__segmented {
   padding: 4px 0;

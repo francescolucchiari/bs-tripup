@@ -385,7 +385,7 @@
 /* riga poll: marker allineato in alto (la card è molto più alta) */
 .rail[data-align='top'] {
   align-self: start;
-  padding-top: 8px;
+  padding-top: 24px;
 }
 
 .daymark__poll {

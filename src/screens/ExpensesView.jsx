@@ -158,7 +158,16 @@ export default function ExpensesView({ onPay, settled = false }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: 'easeOut' }}
         >
-          <span className="exp__empty-illus" aria-hidden="true" />
+          <span className="exp__empty-illus" aria-hidden="true">
+            <img
+              src="/illus/squared.png"
+              alt=""
+              onError={(e) => {
+                // asset non ancora caricato → resta il cerchio pieno
+                e.currentTarget.style.display = 'none'
+              }}
+            />
+          </span>
           <h3 className="exp__empty-title">Everyone’s squared up!</h3>
           <p className="exp__empty-sub">Good job, keep enjoying the trip</p>
         </motion.div>

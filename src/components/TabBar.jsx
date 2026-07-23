@@ -1,10 +1,10 @@
-import { Map, Activity } from 'lucide-react'
+import { Map, ListChecks } from 'lucide-react'
 import Avatar from './Avatar'
 import './TabBar.css'
 
 const DEFAULT_TABS = [
   { key: 'travels', label: 'Travels', icon: Map },
-  { key: 'activity', label: 'Activity', icon: Activity },
+  { key: 'activity', label: 'Activity', icon: ListChecks },
   { key: 'profile', label: 'Profile', avatar: { name: 'Ari' } },
 ]
 

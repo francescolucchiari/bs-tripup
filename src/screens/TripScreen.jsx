@@ -1,6 +1,6 @@
 import { useState, useRef, useLayoutEffect, useEffect, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, Plus, Pencil, Map, Activity, Loader } from 'lucide-react'
+import { ChevronLeft, Plus, Pencil, Map, ListChecks, Loader } from 'lucide-react'
 import SegmentedControl from '../components/SegmentedControl'
 import AvatarStack from '../components/AvatarStack'
 import TabBar from '../components/TabBar'
@@ -29,6 +29,9 @@ const ASSETS = {
   eat1: '/trip/eat-lumi.jpg',
   eat2: '/trip/eat-retasco.jpg',
   eat3: '/trip/eat-timeout.jpg',
+  eat4: '/trip/eat-pastelaria.jpg',
+  eat5: '/trip/eat-brunchbites.jpg',
+  eat6: '/trip/eat-koppu.jpg',
   blob: '/trip/header-blob.svg',
 }
 
@@ -45,13 +48,12 @@ const PARTICIPANTS = [
 const REN = { name: 'Ren', src: '/trip/avatar-5.jpg' }
 
 // Amici frequenti (modale Add member). Il primo è Ren (invitabile);
-// gli altri sono mock. Immagini in attesa: friend-justin/olivia/michael.jpg
-// (finché mancano, l'Avatar mostra l'iniziale).
+// gli altri sono mock.
 const COMPANIONS = [
   { id: 'ren', name: 'Ren Okafor', src: '/trip/avatar-5.jpg' },
-  { id: 'justin', name: 'Justin Voyager', src: null },
-  { id: 'olivia', name: 'Olivia Marker', src: null },
-  { id: 'michael', name: 'Michael Scott', src: null },
+  { id: 'justin', name: 'Justin Voyager', src: '/trip/friend-justin.jpg' },
+  { id: 'olivia', name: 'Olivia Marker', src: '/trip/friend-olivia.jpg' },
+  { id: 'michael', name: 'Michael Scott', src: '/trip/friend-michael.jpg' },
 ]
 
 // Immagini delle opzioni: in attesa degli export (vedi nomenclatura opt-*).
@@ -64,7 +66,7 @@ const POLL_OPTIONS = [
 
 const TABS = [
   { key: 'travels', label: 'Travels', icon: Map },
-  { key: 'activity', label: 'Activity', icon: Activity },
+  { key: 'activity', label: 'Activity', icon: ListChecks },
   { key: 'profile', label: 'Profile', avatar: { name: 'Ari', src: '/trip/avatar-1.jpg' } },
 ]
 
@@ -278,6 +280,7 @@ export default function TripScreen({ onNext, onBack }) {
               </span>
             </div>
             <ItineraryCardPreview
+              image={ASSETS.eat4}
               label="Brunch"
               title="@Pastelaria S. Antonio"
               amount="€23.75"
@@ -285,6 +288,7 @@ export default function TripScreen({ onNext, onBack }) {
 
             <div className="rail" data-spine="through" />
             <ItineraryCardPreview
+              image={ASSETS.eat5}
               label="Lunch"
               title="@Brunch And Bites - Alfama"
               amount="€64.25"
@@ -292,6 +296,7 @@ export default function TripScreen({ onNext, onBack }) {
 
             <div className="rail" data-spine="through" />
             <ItineraryCardPreview
+              image={ASSETS.eat6}
               label="Dinner"
               title="@Koppu Ramen Izakaya - Chiado"
               amount="€75.00"

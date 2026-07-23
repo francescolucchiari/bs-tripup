@@ -1,4 +1,4 @@
-import { CalendarX2, ChevronRight, Map, Activity } from 'lucide-react'
+import { CalendarX2, ChevronRight, Map, ListChecks } from 'lucide-react'
 import Button from '../components/Button'
 import Avatar from '../components/Avatar'
 import TabBar from '../components/TabBar'
@@ -13,7 +13,9 @@ import './HomeScreen.css'
  */
 
 const ASSETS = {
-  cover: '/trip/cover.jpg',
+  // cover dedicata: quella dell'itinerario è verticale e qui verrebbe
+  // ritagliata male (la card è 313×140, orizzontale)
+  cover: '/trip/home-cover.jpg',
   // in attesa di export (vedi handoff): finché mancano resta il placeholder
   dolomiti: '/trip/past-dolomiti.jpg',
   amsterdam: '/trip/past-amsterdam.jpg',
@@ -49,7 +51,7 @@ const PAST_TRIPS = [
 
 const TABS = [
   { key: 'travels', label: 'Travels', icon: Map },
-  { key: 'activity', label: 'Activity', icon: Activity },
+  { key: 'activity', label: 'Activity', icon: ListChecks },
   { key: 'profile', label: 'Profile', avatar: { name: 'Ari', src: '/trip/avatar-1.jpg' } },
 ]
 

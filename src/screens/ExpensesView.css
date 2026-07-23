@@ -187,11 +187,24 @@
 }
 
 .exp__empty-illus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 112px;
   height: 112px;
   border-radius: 50%;
-  background: var(--surface-placeholder);
+  background: var(--bg-accent-strong);
   margin-bottom: 16px;
+  /* L'illustrazione è full-bleed fino ai propri bordi: senza padding gli
+     angoli cadrebbero fuori dal cerchio e verrebbero tranciati dal raggio.
+     18px inscrivono l'artwork nel cerchio invece che nel quadrato. */
+  padding: 18px;
+}
+
+.exp__empty-illus img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .exp__empty-title {
