@@ -4,17 +4,23 @@ import Playground from './pages/Playground'
 import DevToggle from './DevToggle'
 
 /**
- * App — step 3: scheletro navigabile del prototipo.
+ * App — scheletro navigabile del prototipo.
  *
- * Il DevToggle (fuori dal frame mobile) alterna tra due viste:
- *  - "Prototype"     → il flusso navigabile dell'app (Prototype)
- *  - "Design System" → il playground con token e componenti (Playground)
+ * In consegna si vede solo il prototipo: il DevToggle
+ * ("Prototype" / "Design System") è uno strumento di sviluppo e resta
+ * nascosto, così chi visiona il progetto non trova comandi che non fanno
+ * parte dell'app.
  *
- * Il toggle è uno strumento di sviluppo: non fa parte della navigazione
- * interna del prototipo.
+ * Per riaprirlo basta aggiungere `?dev` all'URL (es. localhost:5173/?dev),
+ * senza toccare il codice: il playground con token e componenti resta
+ * raggiungibile, solo non in evidenza.
  */
+const DEV = new URLSearchParams(window.location.search).has('dev')
+
 export default function App() {
   const [view, setView] = useState('prototype')
+
+  if (!DEV) return <Prototype />
 
   return (
     <>

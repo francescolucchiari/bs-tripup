@@ -7,6 +7,7 @@ import TabBar from '../components/TabBar'
 import Toast from '../components/Toast'
 import ItineraryCardPreview from '../components/ItineraryCardPreview'
 import PollFlow from '../components/PollFlow'
+import ProgressiveBlur from '../components/ProgressiveBlur'
 import AddExpenseModal from './AddExpenseModal'
 import CreatePollModal from './CreatePollModal'
 import AddMemberModal from './AddMemberModal'
@@ -253,15 +254,7 @@ export default function TripScreen({
             il contenuto sfuma con continuità attraversando tutta la zona,
             senza scalino sul bordo del segmented. */}
         <div className="trip__belowfold">
-          <div className="trip__fade" aria-hidden="true">
-            <div className="trip__fade-layer" />
-            <div className="trip__fade-layer" />
-            <div className="trip__fade-layer" />
-            <div className="trip__fade-layer" />
-            <div className="trip__fade-layer" />
-            <div className="trip__fade-layer" />
-            <div className="trip__fade-veil" />
-          </div>
+          <ProgressiveBlur className="trip__fade" dir="up" height={74} veil />
 
           <div className="trip__segmented">
             <SegmentedControl

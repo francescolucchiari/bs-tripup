@@ -24,21 +24,21 @@
 .cv-section__code {
   display: block;
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin: 2px 0 16px;
 }
 
 .cv-label {
   display: block;
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin: 6px 0 8px;
 }
 
 .cv-note {
   display: block;
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin-top: 10px;
 }
 
@@ -69,7 +69,7 @@
 
 .cv-tag {
   font: var(--tiny);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 

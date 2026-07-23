@@ -138,7 +138,7 @@
 
 .exp__person-sub {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .exp__person .btn {
@@ -214,5 +214,5 @@
 
 .exp__empty-sub {
   font: var(--body-m);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }

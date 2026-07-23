@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronDown, Pencil, Plus, Check, Minus } from 'lucide-react'
 import SegmentedControl from '../components/SegmentedControl'
 import Button from '../components/Button'
 import Avatar from '../components/Avatar'
+import ProgressiveBlur from '../components/ProgressiveBlur'
 import './AddExpenseModal.css'
 
 /**
@@ -60,6 +61,8 @@ export default function AddExpenseModal({
   const [tab, setTab] = useState('amount')
   const [splits, setSplits] = useState([])
   const [detailsOpen, setDetailsOpen] = useState(false)
+  const scrollRef = useRef(null)
+  const pendingSplit = useRef(null) // id dello split appena aggiunto
 
   // prefill dinamico del Name in base al posto vincitore
   const displayName = name || (placeName ? `Dinner at ${placeName}` : '')
@@ -115,16 +118,40 @@ export default function AddExpenseModal({
       const cost =
         isFirst || remainingCents === 0 ? '' : (remainingCents / 100).toFixed(2)
       // di default lo split è diviso tra TUTTI i partecipanti
+      const id = splitId()
+      pendingSplit.current = id // → scroll appena finita l'animazione d'entrata
       return [
         ...s,
         {
-          id: splitId(),
+          id,
           name: '',
           cost,
           members: participants.map((p) => p.id),
         },
       ]
     })
+
+  // Porta la nuova split interamente in vista, con almeno 32px di margine
+  // sopra l'inizio della fascia sfocata: appoggiarla al bordo la lascerebbe
+  // lambire dalla sfumatura. Va fatto a animazione conclusa: durante l'entrata
+  // l'altezza va da 0 ad auto, e misurarla prima darebbe un target sbagliato.
+  // Non risale mai: se la card è già visibile, lo scroll resta dov'è.
+  const revealSplit = (id) => {
+    if (pendingSplit.current !== id) return
+    pendingSplit.current = null
+    const sc = scrollRef.current
+    const card = sc?.querySelector(`[data-split-id="${id}"]`)
+    const fade = document.querySelector('.axp__fade--bottom')
+    if (!sc || !card) return
+    const limite = fade
+      ? fade.getBoundingClientRect().top
+      : sc.getBoundingClientRect().bottom
+    const MARGINE = 32
+    const delta = card.getBoundingClientRect().bottom + MARGINE - limite
+    if (delta <= 0) return
+    const max = sc.scrollHeight - sc.clientHeight
+    sc.scrollTo({ top: Math.min(max, sc.scrollTop + delta), behavior: 'smooth' })
+  }
   const updateSplit = (id, patch) =>
     setSplits((s) => s.map((sp) => (sp.id === id ? { ...sp, ...patch } : sp)))
   const removeSplit = (id) => setSplits((s) => s.filter((sp) => sp.id !== id))
@@ -165,8 +192,11 @@ export default function AddExpenseModal({
             </div>
           </header>
 
-          {/* Contenuto scrollabile */}
-          <div className="axp__scroll">
+          {/* Corpo: lo scroll riempie tutto lo spazio, le due fasce di blur e
+              la CTA ci galleggiano sopra. Così il contenuto sfuma entrando
+              sotto l'header e sotto la CTA invece di essere tagliato netto. */}
+          <div className="axp__body">
+          <div className="axp__scroll" ref={scrollRef}>
             {/* Name */}
             <div className="axp__field">
               <div className="axp__field-body">
@@ -318,11 +348,13 @@ export default function AddExpenseModal({
                       {splits.map((s) => (
                         <motion.div
                           key={s.id}
+                          data-split-id={s.id}
                           className="axp__split"
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.28, ease: 'easeOut' }}
+                          onAnimationComplete={() => revealSplit(s.id)}
                         >
                           <div className="axp__split-head">
                             <input
@@ -399,6 +431,14 @@ export default function AddExpenseModal({
             )}
           </div>
 
+          <ProgressiveBlur className="axp__fade axp__fade--top" dir="up" height={24} veil />
+          <ProgressiveBlur
+            className="axp__fade axp__fade--bottom"
+            dir="down"
+            height={132}
+            veil="solid"
+          />
+
           {/* Footer CTA — disabilitata finché i conti non tornano */}
           <div className="axp__footer">
             <Button
@@ -410,6 +450,7 @@ export default function AddExpenseModal({
             >
               {editing ? 'Save changes' : 'Add expense'}
             </Button>
+          </div>
           </div>
         </motion.div>
       )}

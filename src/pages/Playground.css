@@ -31,7 +31,7 @@
 
 .pg-footer span {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .pg-badge {
@@ -95,7 +95,7 @@
 
 .pg-fontcheck__label {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -115,7 +115,7 @@
 
 .pg-type__label {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .pg-type__sample {
@@ -206,6 +206,6 @@
 
 .pg-swatch__hex {
   font: var(--tiny);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   letter-spacing: var(--tracking-tight);
 }

@@ -50,7 +50,7 @@
 
 .axp__subtitle {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin-top: 2px;
 }
 
@@ -60,14 +60,39 @@
 }
 
 /* ---- Scroll ---- */
-.axp__scroll {
+/* Corpo: contenitore di riferimento per scroll, fasce blur e CTA. */
+.axp__body {
+  position: relative;
   flex: 1 1 auto;
+  min-height: 0;
+}
+
+.axp__scroll {
+  position: absolute;
+  inset: 0;
+  /* Contiene lo stacking interno: senza questo, i figli con z-index proprio
+     (es. .axp__split-card) sfuggirebbero dallo scroll e passerebbero SOPRA
+     le fasce di blur invece che sotto. */
+  isolation: isolate;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 8px 24px 24px;
+  /* padding-top = altezza della fascia superiore: a riposo il primo campo
+     è tutto fuori dalla sfocatura, e ci entra solo scorrendo.
+     padding-bottom = ingombro della CTA + fascia, così l'ultimo elemento
+     può risalire oltre il bottone invece di restarci sotto. */
+  padding: 24px 24px 148px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* ---- Fasce di sfocatura ---- */
+.axp__fade--top {
+  top: 0;
+}
+
+.axp__fade--bottom {
+  bottom: 0;
 }
 
 /* ---- Card generica ---- */
@@ -100,7 +125,7 @@
 
 .axp__field-label {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .axp__field-input {
@@ -144,7 +169,7 @@
 
 .axp__paid-date {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .axp__paid-amount {
@@ -330,7 +355,7 @@
 
 .axp__person-sub {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .axp__person-amount {
@@ -343,7 +368,7 @@
 /* ---- Placeholder (Percent) ---- */
 .axp__placeholder {
   text-align: center;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font: var(--body-m);
 }
 
@@ -460,7 +485,7 @@
 }
 
 .axp__split-name::placeholder {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-style: italic;
   font-weight: 400;
 }
@@ -489,7 +514,7 @@
 .axp__split-divided {
   display: block;
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin: 10px 0 8px;
 }
 
@@ -541,12 +566,8 @@
 }
 
 .axp__pick-name {
-  font: var(--caption);
-  color: var(--text-secondary);
-}
-
-.axp__pick:not([data-on]) .axp__pick-name {
-  color: var(--text-tertiary);
+  font: var(--body-m); /* 14px */
+  color: var(--text-primary); /* green-900 · #154200 */
 }
 
 .axp__split-add {
@@ -556,8 +577,13 @@
 }
 
 /* ---- Footer ---- */
+/* CTA sticky: sta sopra la fascia inferiore (che le fa da sfondo sfocato),
+   quindi niente fondo pieno, altrimenti taglierebbe di netto il contenuto. */
 .axp__footer {
-  flex: 0 0 auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
   padding: 12px 24px 28px;
-  background: var(--bg-page);
 }

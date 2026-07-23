@@ -164,73 +164,10 @@
 }
 
 /* ---- FASCIA PROGRESSIVE-BLUR ----
-   Parte dal bordo inferiore dell'header (top:0 di belowfold) e copre
-   ~74px passando DIETRO al segmented. Più layer a blur crescente,
-   ciascuno rivelato da una mask a gradiente: near-content (basso) blur
-   ~0, near-header (alto) blur massimo → transizione continua. */
+   Il come sta in ProgressiveBlur; qui solo dove va: dal bordo inferiore
+   dell'header (top:0 di belowfold), passando DIETRO al segmented. */
 .trip__fade {
-  position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 74px;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.trip__fade-layer,
-.trip__fade-veil {
-  position: absolute;
-  inset: 0;
-}
-
-/* Rivelazione cumulativa verso l'alto: ogni layer parte più in alto e
-   sfoca di più. La soglia di mask sale con il blur. */
-.trip__fade-layer:nth-child(1) {
-  -webkit-backdrop-filter: blur(0.6px);
-  backdrop-filter: blur(0.6px);
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 18%);
-  mask-image: linear-gradient(to top, transparent 0%, #000 18%);
-}
-.trip__fade-layer:nth-child(2) {
-  -webkit-backdrop-filter: blur(1.2px);
-  backdrop-filter: blur(1.2px);
-  -webkit-mask-image: linear-gradient(to top, transparent 15%, #000 33%);
-  mask-image: linear-gradient(to top, transparent 15%, #000 33%);
-}
-.trip__fade-layer:nth-child(3) {
-  -webkit-backdrop-filter: blur(2.4px);
-  backdrop-filter: blur(2.4px);
-  -webkit-mask-image: linear-gradient(to top, transparent 30%, #000 48%);
-  mask-image: linear-gradient(to top, transparent 30%, #000 48%);
-}
-.trip__fade-layer:nth-child(4) {
-  -webkit-backdrop-filter: blur(4.5px);
-  backdrop-filter: blur(4.5px);
-  -webkit-mask-image: linear-gradient(to top, transparent 45%, #000 63%);
-  mask-image: linear-gradient(to top, transparent 45%, #000 63%);
-}
-.trip__fade-layer:nth-child(5) {
-  -webkit-backdrop-filter: blur(9px);
-  backdrop-filter: blur(9px);
-  -webkit-mask-image: linear-gradient(to top, transparent 60%, #000 80%);
-  mask-image: linear-gradient(to top, transparent 60%, #000 80%);
-}
-.trip__fade-layer:nth-child(6) {
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  -webkit-mask-image: linear-gradient(to top, transparent 76%, #000 96%);
-  mask-image: linear-gradient(to top, transparent 76%, #000 96%);
-}
-
-/* velo di colore leggero solo verso l'alto: raccorda col segmented senza
-   nascondere il contenuto (niente bordo netto) */
-.trip__fade-veil {
-  background: linear-gradient(
-    to top,
-    rgba(249, 249, 249, 0) 55%,
-    rgba(249, 249, 249, 0.5) 100%
-  );
 }
 
 /* ---- CONTENUTO SCROLLABILE ---- */

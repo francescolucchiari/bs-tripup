@@ -39,7 +39,7 @@
 
 .input-text__label {
   font: var(--caption);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .input-text__field {
