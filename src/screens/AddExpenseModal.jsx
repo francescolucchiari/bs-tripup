@@ -31,6 +31,19 @@ const parseAmt = (s) => {
 }
 const fmt = (cents) => `€${(cents / 100).toFixed(2)}`
 
+// Normalizza un importo digitato quando il campo perde il focus: virgola →
+// punto e sempre due decimali ("12" → "12.00", "12,5" → "12.50").
+// Va fatto al blur e non mentre si scrive, altrimenti i decimali comparirebbero
+// sotto le dita a metà digitazione. Vuoto resta vuoto (mostra il placeholder);
+// un valore non interpretabile viene azzerato, così non resta a schermo un
+// numero che i conti stanno già ignorando.
+const normalizeAmt = (v) => {
+  const raw = String(v ?? '').trim()
+  if (raw === '') return ''
+  const n = parseFloat(raw.replace(',', '.'))
+  return Number.isFinite(n) && n >= 0 ? n.toFixed(2) : ''
+}
+
 // divide totalCents equamente in n quote; i centesimi di resto vanno ai primi
 // (indice 0 = chi paga), così la somma resta esatta.
 const equalCents = (totalCents, n) => {
@@ -225,6 +238,7 @@ export default function AddExpenseModal({
                   inputMode="decimal"
                   value={paid}
                   onChange={(e) => setPaid(e.target.value.replace(/[^\d.,]/g, ''))}
+                  onBlur={(e) => setPaid(normalizeAmt(e.target.value))}
                   placeholder="0.00"
                 />
               </label>
@@ -373,6 +387,9 @@ export default function AddExpenseModal({
                                     updateSplit(s.id, {
                                       cost: e.target.value.replace(/[^\d.,]/g, ''),
                                     })
+                                  }
+                                  onBlur={(e) =>
+                                    updateSplit(s.id, { cost: normalizeAmt(e.target.value) })
                                   }
                                   placeholder="0.00"
                                 />
