@@ -419,7 +419,14 @@ export default function TripScreen({
             )}
         </div>
         {seg === 'expenses' && (
-          <ExpensesView onPay={(t) => setPayTarget(t)} settled={settled} />
+          <ExpensesView
+            onPay={(t) => setPayTarget(t)}
+            onRemind={(nome) => {
+              setExpenseToast(`Reminder sent to ${nome}`)
+              joinTimers.current.push(setTimeout(() => setExpenseToast(null), 2600))
+            }}
+            settled={settled}
+          />
         )}
       </div>
 

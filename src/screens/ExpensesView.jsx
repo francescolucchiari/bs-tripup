@@ -12,8 +12,9 @@ import './ExpensesView.css'
  * l'utente (incl. la card "You" → Pay verso Tom) e "Others".
  *
  * Props:
- *  - onPay:   (target) => void   apre la modale di pagamento
- *  - settled: boolean            quando true, le card escono a cascata e
+ *  - onPay:    (target) => void   apre la modale di pagamento
+ *  - onRemind: (nome) => void    chiede il toast di sollecito
+ *  - settled:  boolean           quando true, le card escono a cascata e
  *                                compare lo stato "Everyone's squared up!"
  */
 
@@ -39,8 +40,8 @@ function useCountCents(target, duration = 1.1) {
 const INVOLVING = [
   { id: 'you', name: 'You', src: AV(1), sub: 'Owe Tom €46.00', kind: 'pay',
     target: { name: 'Tom', src: AV(2), amount: 4600 } },
-  { id: 'mara', name: 'Mara', src: AV(4), sub: 'Owes You €61.40', kind: 'owed' },
-  { id: 'ren', name: 'Ren', src: AV(5), sub: 'Owes You €41.20', kind: 'owed' },
+  { id: 'mara', name: 'Mara', src: AV(4), sub: 'Owes You €61.40', kind: 'owed', amount: 6140 },
+  { id: 'ren', name: 'Ren', src: AV(5), sub: 'Owes You €41.20', kind: 'owed', amount: 4120 },
 ]
 const OTHERS = [
   { id: 'nic1', name: 'Nic', src: AV(3), sub: 'Owes Tom €30.80' },
@@ -64,7 +65,7 @@ function PersonRow({ p, onPay }) {
   )
 }
 
-function Card({ p, onPay }) {
+function Card({ p, onPay, onSettle, onRemind }) {
   return (
     <motion.div
       className="exp__card"
@@ -75,22 +76,39 @@ function Card({ p, onPay }) {
       <PersonRow p={p} onPay={onPay} />
       {p.kind === 'owed' && (
         <div className="exp__actions">
-          <button type="button" className="exp__settle">Mark settled</button>
-          <button type="button" className="exp__remind">Remind</button>
+          <button type="button" className="exp__settle" onClick={() => onSettle?.(p)}>
+            Mark settled
+          </button>
+          <button type="button" className="exp__remind" onClick={() => onRemind?.(p.name)}>
+            Remind
+          </button>
         </div>
       )}
     </motion.div>
   )
 }
 
-export default function ExpensesView({ onPay, settled = false }) {
+export default function ExpensesView({ onPay, onRemind, settled = false }) {
   const [simplify, setSimplify] = useState(true) // mock
-  const owedTotal = useCountCents(settled ? 0 : 10260) // €102.60 → 0
-  const oweTotal = useCountCents(settled ? 0 : 4600) //  €46.00  → 0
   const [inv, setInv] = useState(settled ? [] : INVOLVING)
   const [oth, setOth] = useState(settled ? [] : OTHERS)
   const [squared, setSquared] = useState(settled)
   const timers = useRef([])
+
+  // I totali si derivano dalle card ancora in lista: saldandone una a mano il
+  // riepilogo scende di conseguenza, invece di restare fermo e contraddire
+  // quello che si vede sotto. Durante il saldo finale restano forzati a 0,
+  // così la cascata resta quella già collaudata.
+  const owedTotal = useCountCents(
+    settled ? 0 : inv.reduce((t, p) => t + (p.kind === 'owed' ? p.amount : 0), 0),
+  )
+  const oweTotal = useCountCents(
+    settled ? 0 : inv.reduce((t, p) => t + (p.kind === 'pay' ? p.target.amount : 0), 0),
+  )
+
+  // "Mark settled": la card esce con la stessa animazione della cascata finale
+  // (vive sul componente Card, quindi basta toglierla dalla lista).
+  const handleSettle = (p) => setInv((l) => l.filter((x) => x.id !== p.id))
 
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
@@ -179,7 +197,13 @@ export default function ExpensesView({ onPay, settled = false }) {
               <div className="exp__cards">
                 <AnimatePresence>
                   {inv.map((p) => (
-                    <Card key={p.id} p={p} onPay={onPay} />
+                    <Card
+                      key={p.id}
+                      p={p}
+                      onPay={onPay}
+                      onSettle={handleSettle}
+                      onRemind={onRemind}
+                    />
                   ))}
                 </AnimatePresence>
               </div>

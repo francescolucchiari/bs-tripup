@@ -50,7 +50,9 @@
 .trip__back {
   position: absolute;
   top: calc(8px + var(--statusbar-h));
-  left: 12px;
+  /* allineato al padding dell'header: il bordo del cerchio cade sulla stessa
+     verticale di titolo e sottotitolo */
+  left: 24px;
   z-index: 3;
   display: inline-flex;
   align-items: center;
