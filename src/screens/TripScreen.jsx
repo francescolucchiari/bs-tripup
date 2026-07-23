@@ -12,6 +12,7 @@ import CreatePollModal from './CreatePollModal'
 import AddMemberModal from './AddMemberModal'
 import ExpensesView from './ExpensesView'
 import PayModal from './PayModal'
+import { REN } from '../data/trip'
 import './TripScreen.css'
 
 /**
@@ -28,24 +29,12 @@ const ASSETS = {
   cover: '/trip/cover.jpg',
   eat1: '/trip/eat-lumi.jpg',
   eat2: '/trip/eat-retasco.jpg',
-  eat3: '/trip/eat-timeout.jpg',
+  eat3: '/trip/eat-orquidea.jpg',
   eat4: '/trip/eat-pastelaria.jpg',
   eat5: '/trip/eat-brunchbites.jpg',
   eat6: '/trip/eat-koppu.jpg',
   blob: '/trip/header-blob.svg',
 }
-
-// L'utente corrente ("me") è l'avatar 1 (Ari). Stato iniziale: 4 partecipanti.
-// Il 5° (Ren, avatar-5) verrà aggiunto tramite il futuro flusso "aggiungi partecipante".
-const PARTICIPANTS = [
-  { name: 'Ari', src: '/trip/avatar-1.jpg' }, // me
-  { name: 'Tom', src: '/trip/avatar-2.jpg' },
-  { name: 'Nic', src: '/trip/avatar-3.jpg' },
-  { name: 'Mara', src: '/trip/avatar-4.jpg' },
-]
-
-// Ren che entra nel gruppo via modale Add member.
-const REN = { name: 'Ren', src: '/trip/avatar-5.jpg' }
 
 // Amici frequenti (modale Add member). Il primo è Ren (invitabile);
 // gli altri sono mock.
@@ -80,14 +69,20 @@ const EXPENSE_PARTICIPANTS = [
   { id: 'ren', name: 'Ren', src: '/trip/avatar-5.jpg' },
 ]
 
-export default function TripScreen({ onNext, onBack }) {
+export default function TripScreen({
+  onNext,
+  onBack,
+  participants = [],
+  onParticipantsChange,
+  onStatusChange,
+}) {
   const [seg, setSeg] = useState('itinerary')
   const [expense, setExpense] = useState(null) // { placeName } quando la modale è aperta
   const [createOpen, setCreateOpen] = useState(false) // modale "Create new poll"
   const [pollCreated, setPollCreated] = useState(false) // poll attivo nell'itinerario
   const [pollResolved, setPollResolved] = useState(false) // poll concluso → marker torna un dot
+  const [dinnerPlace, setDinnerPlace] = useState('') // vincitore del poll
   const [memberOpen, setMemberOpen] = useState(false) // modale "Add member"
-  const [participants, setParticipants] = useState(PARTICIPANTS)
   const [joinToast, setJoinToast] = useState(false) // toast "Ren joined your trip!"
   const [dinnerExpense, setDinnerExpense] = useState(null) // { place, amount, image }
   const [expenseToast, setExpenseToast] = useState(null) // testo toast spesa
@@ -104,6 +99,22 @@ export default function TripScreen({ onNext, onBack }) {
     [participants],
   )
 
+  // Stato della cena pubblicato verso l'alto: la Home lo usa per la striscia
+  // sotto la card del viaggio, che altrimenti resterebbe ferma su "non ancora
+  // deciso" anche a poll chiuso.
+  useEffect(() => {
+    if (!onStatusChange) return
+    if (dinnerExpense) {
+      onStatusChange({ kind: 'paid', place: dinnerExpense.place, amount: dinnerExpense.amount })
+    } else if (pollResolved) {
+      onStatusChange({ kind: 'decided', place: dinnerPlace })
+    } else if (pollCreated) {
+      onStatusChange({ kind: 'poll' })
+    } else {
+      onStatusChange({ kind: 'none' })
+    }
+  }, [dinnerExpense, pollResolved, pollCreated, dinnerPlace, onStatusChange])
+
   // Quando il poll parte, scrolla l'itinerario così resta interamente visibile
   // con una distanza costante (~104px, comunque ≥100) dalla tab bar.
   useEffect(() => {
@@ -112,7 +123,7 @@ export default function TripScreen({ onNext, onBack }) {
     if (!s) return undefined
     const id = requestAnimationFrame(() => {
       const poll = s.querySelector('.poll')
-      const tab = document.querySelector('.tab-bar[data-fixed]')
+      const tab = rootRef.current?.querySelector('.tab-bar[data-fixed]')
       if (!poll || !tab) return
       const GAP = 104
       const target = tab.getBoundingClientRect().top - GAP
@@ -131,12 +142,13 @@ export default function TripScreen({ onNext, onBack }) {
     if (!invited || participants.some((p) => p.name === REN.name)) return
     joinTimers.current.push(
       setTimeout(() => {
-        setParticipants((p) => [...p, REN])
+        onParticipantsChange?.([...participants, REN])
         setJoinToast(true)
         joinTimers.current.push(setTimeout(() => setJoinToast(false), 2200))
       }, 2000),
     )
   }
+  const rootRef = useRef(null)
   const scrollRef = useRef(null)
   const tueRef = useRef(null)
   const scrollMem = useRef(0) // posizione di scroll salvata dell'itinerario
@@ -196,7 +208,7 @@ export default function TripScreen({ onNext, onBack }) {
   }
 
   return (
-    <div className="trip">
+    <div className="trip" ref={rootRef}>
       {/* ---- TOP LAYER FISSO (header + segmented + fascia blur) ---- */}
       <div className="trip__top">
         <header className="trip__header">
@@ -324,7 +336,7 @@ export default function TripScreen({ onNext, onBack }) {
               amount="€110.00"
             />
 
-            {/* Mercoledì 10 — Time Out Market + Not planned */}
+            {/* Mercoledì 10 — Orquidea + Not planned */}
             <div className="rail" data-spine="through">
               <span className="daymark daymark--active">
                 <span className="daymark__dow">Wed</span>
@@ -334,7 +346,7 @@ export default function TripScreen({ onNext, onBack }) {
             <ItineraryCardPreview
               image={ASSETS.eat3}
               label="Lunch"
-              title="@Time Out Market"
+              title="@Orquidea"
               amount="€76.00"
             />
 
@@ -404,7 +416,10 @@ export default function TripScreen({ onNext, onBack }) {
                   question="Where should we eat tonight?"
                   options={POLL_OPTIONS}
                   others={pollOthers}
-                  onResolved={() => setPollResolved(true)}
+                  onResolved={(place) => {
+                    setPollResolved(true)
+                    setDinnerPlace(place)
+                  }}
                   onAddExpense={(place) => setExpense({ placeName: place })}
                 />
               </>

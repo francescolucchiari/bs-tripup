@@ -82,7 +82,9 @@ export default function PollFlow({ question, options, others = DEFAULT_OTHERS, o
       setPoll((p) => ({ ...p, status: 'closed', winnerId: p.myVoteId }))
       const t = setTimeout(() => {
         setPhase('resolved')
-        onResolved?.() // il marker sul rail smette di girare e torna un dot
+        // il marker sul rail smette di girare e torna un dot; il nome del
+        // vincitore serve alla Home per la striscia di stato
+        onResolved?.(options.find((o) => o.id === poll.myVoteId)?.name ?? '')
       }, 1500)
       timers.current.push(t)
       return undefined

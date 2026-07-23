@@ -1,4 +1,4 @@
-import { CalendarX2, ChevronRight, Map, ListChecks } from 'lucide-react'
+import { CalendarX2, CalendarCheck2, Vote, ChevronRight, Map, ListChecks } from 'lucide-react'
 import Button from '../components/Button'
 import Avatar from '../components/Avatar'
 import TabBar from '../components/TabBar'
@@ -24,12 +24,14 @@ const ASSETS = {
 // Cluster di avatar "appoggiato" sull'angolo in basso a destra della foto:
 // non è contenuto nel riquadro, ci galleggia sopra e ne esce sul fondo
 // (Mara e Tom hanno bottom negativo → sconfinano sulla card bianca).
-// Offset dal bordo destro/inferiore della cover. Ordine = ordine di stacking.
-const COVER_AVATARS = [
-  { size: 'md', right: 61, bottom: 15, src: '/trip/avatar-3.jpg', name: 'Nic' },
-  { size: 'sm', right: 10, bottom: -15, src: '/trip/avatar-2.jpg', name: 'Tom' },
-  { size: 'md', right: 9, bottom: 26, src: '/trip/avatar-1.jpg', name: 'Ari' },
-  { size: 'md', right: 47, bottom: -32, src: '/trip/avatar-4.jpg', name: 'Mara' },
+// Offset dal bordo destro/inferiore della cover. Ordine = ordine di stacking:
+// Ren è ultimo, quindi entrando si sovrappone agli altri.
+const COVER_SLOTS = [
+  { name: 'Nic', size: 'sm', right: 67, bottom: 21 },
+  { name: 'Tom', size: 'sm', right: 10, bottom: -15 },
+  { name: 'Ari', size: 'md', right: 9, bottom: 26 },
+  { name: 'Mara', size: 'md', right: 47, bottom: -32 },
+  { name: 'Ren', size: 32, right: 52, bottom: 64 },
 ]
 
 const PAST_TRIPS = [
@@ -55,7 +57,31 @@ const TABS = [
   { key: 'profile', label: 'Profile', avatar: { name: 'Ari', src: '/trip/avatar-1.jpg' } },
 ]
 
-export default function HomeScreen({ onNext }) {
+// Striscia sotto la card: segnala cosa resta in suspeso per stasera.
+// A spesa aggiunta non c'è più niente da segnalare e la striscia sparisce
+// del tutto (null), lasciando la card da sola.
+function statusOf(status) {
+  switch (status?.kind) {
+    case 'poll':
+      return { Icon: Vote, text: 'Tonight · voting on where to eat' }
+    case 'decided':
+      return { Icon: CalendarCheck2, text: `Tonight · dinner at ${status.place}` }
+    case 'paid':
+      return null
+    default:
+      return { Icon: CalendarX2, text: 'Tonight · dinner not decided yet' }
+  }
+}
+
+export default function HomeScreen({ onNext, participants = [], status }) {
+  const strip = statusOf(status)
+
+  // Solo gli slot di chi è davvero nel viaggio: Ren compare appena entra.
+  const cluster = COVER_SLOTS.map((slot) => {
+    const p = participants.find((x) => x.name === slot.name)
+    return p ? { ...slot, src: p.src } : null
+  }).filter(Boolean)
+
   return (
     <div className="home">
       {/* Top bar: wordmark (placeholder) + New trip */}
@@ -78,9 +104,9 @@ export default function HomeScreen({ onNext }) {
               <span className="home__cover">
                 <img src={ASSETS.cover} alt="" />
                 <span className="home__cover-avatars" aria-hidden="true">
-                  {COVER_AVATARS.map((a, i) => (
+                  {cluster.map((a, i) => (
                     <span
-                      key={i}
+                      key={a.name}
                       className="home__cover-avatar"
                       style={{ right: a.right, bottom: a.bottom, zIndex: i + 1 }}
                     >
@@ -91,14 +117,18 @@ export default function HomeScreen({ onNext }) {
               </span>
               <span className="home__active-info">
                 <span className="home__active-title">Lisbon Gateway</span>
-                <span className="home__active-meta">June 6 - 10 · 4 participants</span>
+                <span className="home__active-meta">
+                  June 6 - 10 · {participants.length} participants
+                </span>
               </span>
             </button>
 
-            <div className="home__active-status">
-              <CalendarX2 size={16} strokeWidth={2.25} />
-              <span>Tonight · dinner not decided yet</span>
-            </div>
+            {strip && (
+              <div className="home__active-status">
+                <strip.Icon size={16} strokeWidth={2.25} />
+                <span>{strip.text}</span>
+              </div>
+            )}
           </div>
         </section>
 
